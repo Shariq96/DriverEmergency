@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LatLng[] ltlong = new LatLng[3];
     String hello;
-    String url = "http://4b95f6e7.ngrok.io/api/useracc/postnotifyUser";
+    String url = "http://15e479a1.ngrok.io/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
 
@@ -416,10 +416,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();;
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
-        fragmentTransaction.addToBackStack(fragment.toString());
-        fragmentTransaction.commit();
+            FragmentManager fragmentManager = getSupportFragmentManager();;
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
+            fragmentTransaction.addToBackStack(fragment.toString());
+            fragmentTransaction.commit();
     }
 }

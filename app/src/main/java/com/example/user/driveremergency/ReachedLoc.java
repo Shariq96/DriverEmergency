@@ -34,7 +34,7 @@ import okhttp3.Response;
 public class ReachedLoc extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://4b95f6e7.ngrok.io/api/useracc/postStartRide";
+    String url = "http://15e479a1.ngrok.io/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable

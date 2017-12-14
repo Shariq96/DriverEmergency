@@ -36,7 +36,7 @@ import okhttp3.Response;
 public class reahed_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view, view1;
-    String url = "http://4b95f6e7.ngrok.io/api/useracc/postStartRide";
+    String url = "http://15e479a1.ngrok.io/api/useracc/postStartRide";
     FrameLayout f1;
     MainActivity mA = new MainActivity();
     @Nullable
