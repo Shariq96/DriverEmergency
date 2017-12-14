@@ -60,7 +60,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("Driver_id", mA.driver_Id);
         urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
-        urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Starting Ride");
+        urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Start Ride");
         urlBuilder.addQueryParameter("Status_id","2");
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
