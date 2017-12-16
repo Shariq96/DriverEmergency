@@ -26,6 +26,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.user.driveremergency.MainActivity.Trip_id;
+
 
 /**
  * Created by User on 12/8/2017.
@@ -34,7 +36,7 @@ import okhttp3.Response;
 public class reachedToPatient extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://15e479a1.ngrok.io/api/useracc/postStartRide";
+    String url = "http://30468d57.ngrok.io/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable
@@ -58,6 +60,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
     OkHttpClient Client = new OkHttpClient();
     public void post(String url) throws IOException {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+        urlBuilder.addQueryParameter("Trip_id",Trip_id);
         urlBuilder.addQueryParameter("Driver_id", mA.driver_Id);
         urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
         urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Start Ride");

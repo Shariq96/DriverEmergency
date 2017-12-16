@@ -33,8 +33,26 @@
         />
 
     <FrameLayout
-        android:id="@+id/frame"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frame1"
+        android:visibility="gone">
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="CANCEL"
+        android:textSize="25sp"
+        android:layout_gravity="top|left"
+        app:layout_anchor="@+id/map"
+        app:layout_anchorGravity="bottom|right" />
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="272dp"
         android:layout_height="70dp"
         android:layout_marginTop="560dp"
         android:visibility="gone"></FrameLayout>

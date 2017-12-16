@@ -31,11 +31,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -77,16 +79,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location lastLocation;
     private Location  myloc;
     JSONObject jbobj;
-    FrameLayout fl;
-    String driver_Id ="5";
+    FrameLayout fl , f2;
+    public static String driver_Id ="5";
+    public static String Trip_id;
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
     String mobile_no, latLong, userToken;
     public static String customer_id;
-
+    Button btn1;
+    CancelationFragment cf = new CancelationFragment();
     private LatLng[] ltlong = new LatLng[3];
     String hello;
-    String url = "http://15e479a1.ngrok.io/api/useracc/postnotifyUser";
+    String url = "http://30468d57.ngrok.io/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
 
@@ -105,7 +109,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
-
+        f2 = (FrameLayout)findViewById(R.id.frame1);
+        btn1 = (Button)findViewById(R.id.button2);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                f2.setVisibility(v.VISIBLE);
+                replaceFragment2(cf);
+            }
+        });
         mGeoDataClient = Places.getGeoDataClient(this, null);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -191,18 +203,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String myResponse = response.body().string();
-                //  myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
+
+                myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
                 myResponse = myResponse.replace("\\", "");
+
+                //JSONObject jarray = null;
+                //  jarray = new JSONObject(myResponse);
+                //api_pass = jarray.getString("password");
+
+                //api_pass = jarray.getJSONObject(0).getString("password");
                 hello = myResponse;
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (hello.equals("true")) {
-                            Toast.makeText(getApplicationContext(),"Donme",Toast.LENGTH_LONG).show();
+                        if (hello.equals("false")) {
+                            Toast.makeText(getApplicationContext(),"tch tch",Toast.LENGTH_LONG).show();
 
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "tch tch", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_LONG).show();
+                            Trip_id = hello;
 
                         }
                     }
@@ -421,5 +441,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
             fragmentTransaction.addToBackStack(fragment.toString());
             fragmentTransaction.commit();
+    }
+    public void replaceFragment2(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();;
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame1, fragment, fragment.toString());
+        fragmentTransaction.addToBackStack(fragment.toString());
+        fragmentTransaction.commit();
     }
 }
