@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient client;
     private LocationRequest request;
     private Location lastLocation;
-    private Location  myloc;
+    public static Location  myloc;
     JSONObject jbobj;
     public static FrameLayout fl , f2;
     public static String driver_Id ="5";

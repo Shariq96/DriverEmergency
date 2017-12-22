@@ -30,8 +30,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.Trip_id;
+import static com.example.user.driveremergency.MainActivity.customer_id;
+import static com.example.user.driveremergency.MainActivity.driver_Id;
 import static com.example.user.driveremergency.MainActivity.lat;
 import static com.example.user.driveremergency.MainActivity.longi;
+import static com.example.user.driveremergency.MainActivity.myloc;
 import static com.example.user.driveremergency.MainActivity.userToken;
 
 
@@ -43,8 +46,6 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
     String url = "http://7665883c.ngrok.io/api/useracc/postStartRide";
-    private Location  myloc;
-    MainActivity mA = new MainActivity();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -53,20 +54,25 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    post(url);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String check = CalcDistance();
+                if (check.equals("true"))
+                {
+                    try {
+                        post(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
+                else{
+                    Toast.makeText(getActivity().getApplicationContext(),"Please Reach Destination First",Toast.LENGTH_LONG).show();
+                }
 
             }
         });
         return view;
     }
-    /*
-    public boolean CalcDistance() {
-        String result = null;
+    public String CalcDistance() {
+        String result = "false";
         Location loc1 = new Location("");
         loc1.setLatitude(myloc.getLatitude());
         loc1.setLongitude(myloc.getLongitude());
@@ -76,21 +82,21 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         loc2.setLongitude(Double.parseDouble(longi));
             float distanceInMeters = loc1.distanceTo(loc2);
             if (distanceInMeters  <= 300) {
-                return true;
+                result = "true";
+                return result;
             }
-            else return false;
+            else return result;
 
         }
 
-*/
 
 
     OkHttpClient Client = new OkHttpClient();
     public void post(String url) throws IOException {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("Trip_id",Trip_id);
-        urlBuilder.addQueryParameter("Driver_id", mA.driver_Id);
-        urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
+        urlBuilder.addQueryParameter("Driver_id", driver_Id);
+        urlBuilder.addQueryParameter("Customer_id",customer_id);
         urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Start Ride");
         urlBuilder.addQueryParameter("Status_id","2");
         urlBuilder.addQueryParameter("userToken",userToken);
