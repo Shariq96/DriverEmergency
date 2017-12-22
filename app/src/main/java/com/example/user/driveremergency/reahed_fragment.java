@@ -83,7 +83,7 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
         Client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(getActivity().getApplicationContext(), "somethng went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "somethng wen t wrong", Toast.LENGTH_LONG).show();
             }
 
             @Override
