@@ -26,17 +26,21 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
 
-        String latLong = remoteMessage.getNotification().getBody();
+        String lat = remoteMessage.getNotification().getBody();
         String  mobile_no = remoteMessage.getNotification().getTitle();
         String color = remoteMessage.getNotification().getColor();
         String Customer_id = remoteMessage.getNotification().getSound();
+        String longi = remoteMessage.getNotification().getTag();
+        String Clickaction = remoteMessage.getNotification().getClickAction();
 
         if(myApplication.isActivityVisible()) {
             Intent intent = new Intent("myFunction");
             intent.putExtra("usermobile_no", mobile_no);
-            intent.putExtra("latlong", latLong);
+            intent.putExtra("lat", lat);
+            intent.putExtra("longi",longi);
             intent.putExtra("token",color);
             intent.putExtra("customer_id",Customer_id);
+            intent.putExtra("ClickAction",Clickaction);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
         else

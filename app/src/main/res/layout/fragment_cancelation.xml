@@ -28,7 +28,7 @@
             android:id="@+id/radioButton1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Driver is too late"
+            android:text="Accident Emergency"
             android:paddingLeft="20dp"
             android:textSize="30sp"
             android:layout_gravity="center_vertical"/>
@@ -36,7 +36,7 @@
         <RadioButton
             android:id="@+id/radioButton2"
             android:layout_width="match_parent"
-            android:text="Bkd by Mistake"
+            android:text="Ambuance Broke Down"
             android:paddingLeft="20dp"
             android:layout_height="wrap_content"
             android:textSize="30sp"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
-            android:text="Patient is f9 now"
+            android:text="Heavy Traffic"
             android:alpha="1"
             android:layout_gravity="center_vertical"/>
 

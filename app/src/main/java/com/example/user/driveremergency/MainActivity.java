@@ -66,6 +66,8 @@ import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 
+import static android.view.View.GONE;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -79,18 +81,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location lastLocation;
     private Location  myloc;
     JSONObject jbobj;
-    FrameLayout fl , f2;
+    public static FrameLayout fl , f2;
     public static String driver_Id ="5";
     public static String Trip_id;
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
-    String mobile_no, latLong, userToken;
-    public static String customer_id;
-    Button btn1;
+    public static String mobile_no, lat,longi, userToken,customer_id,click_action;
+
+   public static  Button btn1;
     CancelationFragment cf = new CancelationFragment();
     private LatLng[] ltlong = new LatLng[3];
     String hello;
-    String url = "http://30468d57.ngrok.io/api/useracc/postnotifyUser";
+    String url = "http://7665883c.ngrok.io/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
 
@@ -110,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
         f2 = (FrameLayout)findViewById(R.id.frame1);
+        fl = (FrameLayout)findViewById(R.id.frame);
         btn1 = (Button)findViewById(R.id.button2);
+        btn1.setVisibility(GONE);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,46 +148,52 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
         jbobject jb = new jbobject();
-    private void displayAlert(Intent intent)
-    {
-        mobile_no = intent.getStringExtra("title");
-        latLong = intent.getStringExtra("body");
+    private void displayAlert(Intent intent) {
+        mobile_no = intent.getStringExtra("usermobile_no");
+        lat = intent.getStringExtra("lat");
         userToken = intent.getStringExtra("token");
         customer_id = intent.getStringExtra("customer_id");
-        final LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("EMERGENCYY RIDE")
-                .setCancelable(
-                        false)
-                .setPositiveButton("Accept",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                ReachedLoc startRide = new ReachedLoc();
-                               fl = (FrameLayout)findViewById(R.id.frame);
-                                fl.setVisibility(View.VISIBLE);
-                                replaceFragment(startRide);
-                                dialog.cancel();
-                             jbobj =  jb.resptoreq(mymob,latLng.toString(),userToken,token,mobile_no);
-                                try {
-                                    post(url,jbobj);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                r.stop();
+        longi = intent.getStringExtra("longi");
+        click_action = intent.getStringExtra("ClickAction");
+        if (click_action == null) {
+            final LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("EMERGENCYY RIDE")
+                    .setCancelable(
+                            false)
+                    .setPositiveButton("Accept",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    ReachedLoc startRide = new ReachedLoc();
+                                    fl.setVisibility(View.VISIBLE);
+                                    replaceFragment(startRide);
+                                    dialog.cancel();
+                                    btn1.setVisibility(View.VISIBLE);
+                                    jbobj = jb.resptoreq(mymob, lat, longi, userToken, token, mobile_no);
+                                    try {
+                                        post(url, jbobj);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    r.stop();
 
-                            }
-                        }).setNegativeButton("Reject",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                        r.stop();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+                                }
+                            }).setNegativeButton("Reject",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            r.stop();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        else
+            fl.setVisibility(GONE);
+            btn1.setVisibility(GONE);
     }
 
     OkHttpClient Client = new OkHttpClient();
@@ -223,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         } else {
                             Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_LONG).show();
                             Trip_id = hello;
+                            btn1.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -377,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 googleApiClient();
                 mMap.setMyLocationEnabled(true);
                 mMap.setTrafficEnabled(true);
-                mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
@@ -389,7 +399,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleApiClient();
             mMap.setMyLocationEnabled(true);
             mMap.setTrafficEnabled(true);
-            mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setZoomGesturesEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.getUiSettings().setCompassEnabled(true);

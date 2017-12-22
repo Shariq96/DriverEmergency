@@ -29,6 +29,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.Trip_id;
+import static com.example.user.driveremergency.MainActivity.btn1;
+import static com.example.user.driveremergency.MainActivity.fl;
 
 
 /**
@@ -38,8 +40,8 @@ import static com.example.user.driveremergency.MainActivity.Trip_id;
 public class reahed_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view, view1;
-    String url = "http://30468d57.ngrok.io/api/useracc/postStartRide";
-    FrameLayout f1;
+    String url = "http://7665883c.ngrok.io/api/useracc/postStartRide";
+
     MainActivity mA = new MainActivity();
     @Nullable
     @Override
@@ -48,7 +50,6 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
         view1 = getLayoutInflater().inflate(R.layout.activity_main,container,false);
         btn = (Button)view.findViewById(R.id.btn_end);
 
-        f1 = (FrameLayout)view.findViewById(R.id.frame);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +97,8 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
                     public void run() {
                         if (hello.equals("true")) {
                             Toast.makeText(getActivity().getApplicationContext(),"Donme",Toast.LENGTH_LONG).show();
-                                hideFragment();
+                            fl.setVisibility(View.GONE);
+                            btn1.setVisibility(View.GONE);
 
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(), "tch tch", Toast.LENGTH_LONG).show();
@@ -117,10 +119,6 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
         fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
         fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
-    }
-    public  void hideFragment()
-    {
-        f1.setVisibility(view1.GONE);
     }
 }
 

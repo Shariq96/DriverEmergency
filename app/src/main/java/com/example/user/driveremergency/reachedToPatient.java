@@ -1,5 +1,6 @@
 package com.example.user.driveremergency;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -27,6 +30,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.Trip_id;
+import static com.example.user.driveremergency.MainActivity.lat;
+import static com.example.user.driveremergency.MainActivity.longi;
+import static com.example.user.driveremergency.MainActivity.userToken;
 
 
 /**
@@ -36,8 +42,8 @@ import static com.example.user.driveremergency.MainActivity.Trip_id;
 public class reachedToPatient extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://30468d57.ngrok.io/api/useracc/postStartRide";
-
+    String url = "http://7665883c.ngrok.io/api/useracc/postStartRide";
+    private Location  myloc;
     MainActivity mA = new MainActivity();
     @Nullable
     @Override
@@ -52,10 +58,32 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+
             }
         });
         return view;
     }
+    /*
+    public boolean CalcDistance() {
+        String result = null;
+        Location loc1 = new Location("");
+        loc1.setLatitude(myloc.getLatitude());
+        loc1.setLongitude(myloc.getLongitude());
+
+            Location loc2 = new Location("");
+        loc2.setLatitude(Double.parseDouble(lat));
+        loc2.setLongitude(Double.parseDouble(longi));
+            float distanceInMeters = loc1.distanceTo(loc2);
+            if (distanceInMeters  <= 300) {
+                return true;
+            }
+            else return false;
+
+        }
+
+*/
+
 
     OkHttpClient Client = new OkHttpClient();
     public void post(String url) throws IOException {
@@ -65,6 +93,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
         urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Start Ride");
         urlBuilder.addQueryParameter("Status_id","2");
+        urlBuilder.addQueryParameter("userToken",userToken);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)

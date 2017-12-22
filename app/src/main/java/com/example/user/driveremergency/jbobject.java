@@ -39,11 +39,12 @@ public class jbobject
         }
         return  obj;
     }
-    public  JSONObject resptoreq(String mobile_no,String latlong,String token,String myToken,String usermobile){
+    public  JSONObject resptoreq(String mobile_no,String lat,String longi,String token,String myToken,String usermobile){
         JSONObject obj = new JSONObject();
         try {
             obj.put("mobile_no", mobile_no);
-            obj.put("latlong", latlong);
+            obj.put("lat", lat);
+            obj.put("longi",longi);
             obj.put("token", token);
             obj.put("myToken", myToken);
             obj.put("usermobile", usermobile);
