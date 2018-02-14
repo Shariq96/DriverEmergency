@@ -39,7 +39,7 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
     RadioGroup radioReasongGrp;
     int selectedId;
     String val;
-    String url = "http://7665883c.ngrok.io/api/useracc/cancelRideUser";
+    String url = "http://724d8461.ngrok.io/api/useracc/cancelRideUser";
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     CancelationFragment cf = new CancelationFragment();
     private LatLng[] ltlong = new LatLng[3];
     String hello;
-    String url = "http://7665883c.ngrok.io/api/useracc/postnotifyUser";
+    String url = "http://724d8461.ngrok.io/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
 
