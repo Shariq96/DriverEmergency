@@ -60,6 +60,8 @@
         <service
             android:name=".RegistrationIntentService"
             android:exported="false" />
+        <service android:name=".TrackerGps"
+            android:exported="false"/>
 
         <receiver
             android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"

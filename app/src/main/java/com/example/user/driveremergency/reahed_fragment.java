@@ -40,7 +40,7 @@ import static com.example.user.driveremergency.MainActivity.fl;
 public class reahed_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view, view1;
-    String url = "http://724d8461.ngrok.io/api/useracc/postStartRide";
+    String url = "http://192.168.0.104:51967/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable

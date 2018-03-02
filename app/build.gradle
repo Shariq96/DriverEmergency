@@ -40,6 +40,8 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.14.0'
     compile 'com.android.support:support-v4:26.+'
     compile 'com.google.android.gms:play-services-plus:11.6.2'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
     testCompile 'junit:junit:4.12'
 }
 
