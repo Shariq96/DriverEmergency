@@ -42,7 +42,9 @@ public class ReachedLoc extends Fragment implements FragmentChangeListner{
     @Nullable
    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-       view = inflater.inflate(R.layout.fragment_bottom,container,false);
+
+        view = inflater.inflate(R.layout.fragment_bottom,container,false);
+
         btn = (Button)view.findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +61,7 @@ public class ReachedLoc extends Fragment implements FragmentChangeListner{
 
        OkHttpClient Client = new OkHttpClient();
     public void post(String url) throws IOException {
+
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("Trip_id",Trip_id);
         urlBuilder.addQueryParameter("Driver_id", mA.driver_Id);
@@ -69,11 +72,13 @@ public class ReachedLoc extends Fragment implements FragmentChangeListner{
         Request request = new Request.Builder()
                 .url(url1)
                 .build();
+
        /* RequestBody body = RequestBody.create(JSON,jbobj.toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();*/
+
         Client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -82,6 +87,7 @@ public class ReachedLoc extends Fragment implements FragmentChangeListner{
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
                 String myResponse = response.body().string();
                 //  myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
                 myResponse = myResponse.replace("\\", "");

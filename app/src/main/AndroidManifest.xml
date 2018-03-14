@@ -23,9 +23,9 @@
     <application
         android:name=".myApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/madad_logo"
+        android:label="MADAD Driver"
+        android:roundIcon="@mipmap/madad_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Splashscreen">
@@ -42,7 +42,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4sUrqiIzIZTc7_Dx8IFOmcYTWldqeTpw" />
+            android:value="AIzaSyAd1s0XsDExOBq_7V2zA5WVUZGeGQjYvYw" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

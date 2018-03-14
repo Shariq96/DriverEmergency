@@ -33,7 +33,7 @@ import static com.example.user.driveremergency.MainActivity.userToken;
  */
 
 public class CancelationFragment extends Fragment implements FragmentChangeListner {
-    View v;
+     View v;
     Button btn;
     RadioButton radioReasonBtn;
     RadioGroup radioReasongGrp;

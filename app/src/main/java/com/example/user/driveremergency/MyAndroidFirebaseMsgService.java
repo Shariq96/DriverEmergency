@@ -20,14 +20,14 @@ import com.google.firebase.messaging.RemoteMessage;
  */
 
 public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
+
     private static final String TAG = "MyAndroidFCMService";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-
         String lat = remoteMessage.getNotification().getBody();
-        String  mobile_no = remoteMessage.getNotification().getTitle();
+        String mobile_no = remoteMessage.getNotification().getTitle();
         String color = remoteMessage.getNotification().getColor();
         String Customer_id = remoteMessage.getNotification().getSound();
         String longi = remoteMessage.getNotification().getTag();

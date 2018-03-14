@@ -1,18 +1,21 @@
 package com.example.user.driveremergency;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +25,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,29 +36,45 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.user.driveremergency.Common.Common;
+import com.example.user.driveremergency.Remote.IGoogleApi;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -72,7 +93,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener , NavigationView.OnNavigationItemSelectedListener,
-        FragmentChangeListner{
+        FragmentChangeListner {
+
+
+
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
     private GoogleMap mMap;
@@ -87,14 +111,91 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
     public static String mobile_no, lat,longi, userToken,customer_id,click_action;
-
+    private LatLng currentLocationlatlang;
    public static  Button btn1;
+
+   //ambulance animation
+
+    private List<LatLng> polyLineList;
+    private Marker pickupLocationMarker;
+    private float v;
+    private double latitude, longitude;
+    private Handler handler;
+    private LatLng startPosition, endPosition, curentLocation;
+    private int index,next;
+    private Button btnGo;
+    private EditText edtPlace;
+    private String destination;
+    private PolylineOptions polylineOptions, blackPolylineOptions;
+    private Polyline blackPolyline, greyPolyline;
+    private IGoogleApi mService;
+
+
+
     CancelationFragment cf = new CancelationFragment();
+
     private LatLng[] ltlong = new LatLng[3];
+
     String hello;
     String url = "http://7665883c.ngrok.io/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
+    private Location mLastLocation;
+
+    Runnable drawPathRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (index<polyLineList.size()-1){
+                index++;
+                next = index+1;
+            }
+            if (index<polyLineList.size()-1){
+                startPosition = polyLineList.get(index);
+                endPosition = polyLineList.get(next);
+            }
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0,1);
+            valueAnimator.setDuration(3000);
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    v = animation.getAnimatedFraction();
+                    longitude = v*endPosition.longitude+(1-v)*startPosition.longitude;
+                    latitude = v*endPosition.latitude+(1-v)*startPosition.latitude;
+
+                    LatLng newPos = new LatLng(latitude,longitude);
+                    pickupLocationMarker.setPosition(newPos);
+                    pickupLocationMarker.setAnchor(0.5f,0.5f);
+                    pickupLocationMarker.setRotation(getBearing(startPosition,newPos));
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                            .target(newPos)
+                            .zoom(15.5f)
+                            .build()
+                    ));
+                }
+            });
+            valueAnimator.start();
+            handler.postDelayed(this,3000);
+        }
+    };
+
+
+    private float getBearing(LatLng startPosition, LatLng endPosition) {
+
+        double lat = Math.abs(startPosition.latitude - endPosition.latitude);
+        double lng = Math.abs(startPosition.longitude - endPosition.longitude);
+
+        if (startPosition.latitude < endPosition.latitude && startPosition.longitude < endPosition.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+        else if (startPosition.latitude >= endPosition.latitude && startPosition.longitude < endPosition.longitude)
+            return (float) ((90-Math.toDegrees(Math.atan(lng / lat)))+90);
+        else if (startPosition.latitude >= endPosition.latitude && startPosition.longitude >= endPosition.longitude)
+            return (float) ((Math.toDegrees(Math.atan(lng / lat)))+180);
+        else if (startPosition.latitude < endPosition.latitude && startPosition.longitude >= endPosition.longitude)
+            return (float) ((90-Math.toDegrees(Math.atan(lng / lat)))+270);
+    return -1;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +210,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
+
+
+
         f2 = (FrameLayout)findViewById(R.id.frame1);
         fl = (FrameLayout)findViewById(R.id.frame);
         btn1 = (Button)findViewById(R.id.button2);
@@ -122,19 +233,173 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment2(cf);
             }
         });
+
+
         mGeoDataClient = Places.getGeoDataClient(this, null);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
+        polyLineList = new ArrayList<>();
+        btnGo = (Button)findViewById(R.id.btnGo);
+        edtPlace = (EditText)findViewById(R.id.edt_Place);
+
+
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  destination = edtPlace.getText().toString();
+                //replacing space with + for fetching data
+           //     destination = destination.replace(" ", "+");
+                destination = "SHAUKAT+OMAR+MEMORIAL+HOSPITAL";
+                Log.d("AnimationTesting: ", destination);
+
+                getDirections();
+
+
+            }
+        });
+
+        mService = Common.getGoogleApi();
+    }
+
+    private void getDirections() {
+
+        curentLocation = new LatLng(currentLocationlatlang.latitude,currentLocationlatlang.longitude);
+        double destiantionLat = 24.884574;
+        double destinationLng = 67.151115;
+        String requestApi = null;
+
+        try {
+            requestApi = "https://maps.googleapis.com/maps/api/directions/json?"+
+                    "mode=driving&"+
+                    "transit_routing_preference=less_driving&"+
+                    "origin="+curentLocation.latitude+","+curentLocation.longitude+"&"+
+                    "destination="+destiantionLat+","+destinationLng+"&"+
+                    "key="+"AIzaSyC6RCXIx_uZBrlUjS037Ggi0Ml5erS17mI";
+                    Log.d("requestApi", requestApi);
+
+                    mService.getPath(requestApi)
+                            .enqueue(new retrofit2.Callback<String>() {
+                                @Override
+                                public void onResponse(retrofit2.Call<String> call, retrofit2.Response<String> response) {
+
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                                        JSONArray jsonArray = jsonObject.getJSONArray("routes");
+                                        for (int i = 0;i < jsonArray.length();i++){
+                                            JSONObject route = jsonArray.getJSONObject(i);
+                                            JSONObject poly = route.getJSONObject("overview_polyline");
+                                            String polyline = poly.getString("points");
+                                            polyLineList = decodePoly(polyline);
+
+                                        }
+
+                                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                        for (LatLng latLng:polyLineList)
+                                            builder.include(latLng);
+                                            LatLngBounds bounds = builder.build();
+                                        CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 2);
+                                        mMap.animateCamera(mCameraUpdate);
+
+                                        polylineOptions = new PolylineOptions();
+                                        polylineOptions.color(Color.GRAY);
+                                        polylineOptions.width(5);
+                                        polylineOptions.startCap(new SquareCap());
+                                        polylineOptions.endCap(new SquareCap());
+                                        polylineOptions.jointType(JointType.ROUND);
+                                        polylineOptions.addAll(polyLineList);
+                                        greyPolyline = mMap.addPolyline(polylineOptions);
+
+                                        blackPolylineOptions = new PolylineOptions();
+                                        blackPolylineOptions.color(Color.RED);
+                                        blackPolylineOptions.width(5);
+                                        blackPolylineOptions.startCap(new SquareCap());
+                                        blackPolylineOptions.endCap(new SquareCap());
+                                        blackPolylineOptions.jointType(JointType.ROUND);
+                                        blackPolyline = mMap.addPolyline(blackPolylineOptions);
+
+                                        mMap.addMarker(new MarkerOptions().position(polyLineList.get(polyLineList.size() - 1 ))
+                                        .title("Pickup Location"));
+
+                                        ValueAnimator polylineAnimator = ValueAnimator.ofInt(0,100);
+                                        polylineAnimator.setDuration(2000);
+                                        polylineAnimator.setInterpolator(new LinearInterpolator());
+                                        polylineAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                            @Override
+                                            public void onAnimationUpdate(ValueAnimator animation) {
+                                                List<LatLng> points = greyPolyline.getPoints();
+                                                int percentValue = (int) animation.getAnimatedValue();
+                                                int size = points.size();
+                                                int newPoints = (int) (size * (percentValue/100.0f));
+                                                List<LatLng> p = points.subList(0,newPoints);
+                                                blackPolyline.setPoints(p);
+                                            }
+                                        });
+                                        polylineAnimator.start();
+
+                                        pickupLocationMarker = mMap.addMarker(new MarkerOptions().position(curentLocation)
+                                        .flat(true)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ambulance_icon)));
+
+                                        handler = new Handler();
+                                        index = 1;
+                                        next = 1;
+                                        handler.postDelayed(drawPathRunnable,3000);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(retrofit2.Call<String> call, Throwable t) {
+
+                                    Toast.makeText(MainActivity.this, ""+t.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+        }
+        catch (Exception e){
+
+        }
 
 
     }
+
+    private List decodePoly(String encoded) {
+
+        List poly = new ArrayList();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
     @Override
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMsgReciver);
@@ -148,7 +413,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
         jbobject jb = new jbobject();
-    private void displayAlert(Intent intent) {
+
+        private void displayAlert(Intent intent) {
+
         mobile_no = intent.getStringExtra("usermobile_no");
         lat = intent.getStringExtra("lat");
         userToken = intent.getStringExtra("token");
@@ -161,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("EMERGENCYY RIDE")
+            builder.setMessage("EMERGENCY RIDE")
                     .setCancelable(
                             false)
                     .setPositiveButton("Accept",
@@ -305,7 +572,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         request = new LocationRequest();
         request.setInterval(1000);
         request.setFastestInterval(1000);
-        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setSmallestDisplacement(20.0f);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
 
@@ -352,13 +620,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (currentLocation != null) {
             currentLocation.remove();
         }
-        LatLng latlang = new LatLng(location.getLatitude(), location.getLongitude());
+         currentLocationlatlang = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latlang);
+        markerOptions.position(currentLocationlatlang);
         markerOptions.title("CurrentLocation");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         currentLocation = mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlang));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocationlatlang));
         mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
         if (client != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
@@ -368,26 +636,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
         MarkerOptions options = new MarkerOptions();
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
         LatLng civiccenter = new LatLng(24.900394, 67.072483);
+
         googleMap.addMarker(new MarkerOptions().position(civiccenter)
                 .title("Ambulance0"));
+
         LatLng lyari = new LatLng(24.871741, 67.008319);
         googleMap.addMarker(new MarkerOptions().position(lyari)
                 .title("Ambulance2"));
+
         LatLng gurumandir = new LatLng(24.880173, 67.039353);
         googleMap.addMarker(new MarkerOptions().position(gurumandir)
                 .title("Ambulance1"));
+
         ltlong[0] = civiccenter;
         ltlong[1] = gurumandir;
         ltlong[2] = lyari;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 googleApiClient();
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 mMap.setMyLocationEnabled(true);
                 mMap.setTrafficEnabled(true);
+                mMap.setBuildingsEnabled(false);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
@@ -396,6 +675,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         } else {
+
             googleApiClient();
             mMap.setMyLocationEnabled(true);
             mMap.setTrafficEnabled(true);

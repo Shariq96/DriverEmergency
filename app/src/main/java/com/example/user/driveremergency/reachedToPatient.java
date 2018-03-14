@@ -43,14 +43,17 @@ import static com.example.user.driveremergency.MainActivity.userToken;
  */
 
 public class reachedToPatient extends Fragment implements FragmentChangeListner{
+
     Button btn;
     View view;
     String url = "http://7665883c.ngrok.io/api/useracc/postStartRide";
     @Nullable
     @Override
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_reachedpatient,container,false);
         btn = (Button)view.findViewById(R.id.btn_strtRide);
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +74,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         });
         return view;
     }
+
     public String CalcDistance() {
         String result = "false";
         Location loc1 = new Location("");
@@ -91,8 +95,9 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
 
 
 
-    OkHttpClient Client = new OkHttpClient();
+         OkHttpClient Client = new OkHttpClient();
     public void post(String url) throws IOException {
+
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("Trip_id",Trip_id);
         urlBuilder.addQueryParameter("Driver_id", driver_Id);
