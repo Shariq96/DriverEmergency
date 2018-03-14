@@ -8,7 +8,7 @@
         android:textSize="25sp"  android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="Search Hospital"
-        android:drawableLeft="@drawable/ic_search_black_24dp"
+
         android:id="@+id/btn_srchptl"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"

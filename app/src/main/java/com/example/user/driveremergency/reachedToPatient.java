@@ -46,7 +46,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
 
     Button btn;
     View view;
-    String url = "http://7665883c.ngrok.io/api/useracc/postStartRide";
+    String url = "http://192.168.0.104:51967/api/useracc/postStartRide";
     @Nullable
     @Override
 

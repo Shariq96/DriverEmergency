@@ -27,6 +27,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.util.Log;
+
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng[] ltlong = new LatLng[3];
 
     String hello;
-    String url = "http://7665883c.ngrok.io/api/useracc/postnotifyUser";
+    String url = "http://192.168.0.148:51967/api/useracc/postnotifyUser";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
     private Location mLastLocation;
@@ -417,10 +418,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         private void displayAlert(Intent intent) {
 
         mobile_no = intent.getStringExtra("usermobile_no");
-        lat = intent.getStringExtra("lat");
+        lat =intent.getStringExtra("lat");
         userToken = intent.getStringExtra("token");
         customer_id = intent.getStringExtra("customer_id");
-        longi = intent.getStringExtra("longi");
+        longi =intent.getStringExtra("longi");
         click_action = intent.getStringExtra("ClickAction");
         if (click_action == null) {
             final LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -441,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     btn1.setVisibility(View.VISIBLE);
                                     jbobj = jb.resptoreq(mymob, lat, longi, userToken, token, mobile_no);
                                     try {
+                                        setDirections();
                                         post(url, jbobj);
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -572,8 +574,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         request = new LocationRequest();
         request.setInterval(1000);
         request.setFastestInterval(1000);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setSmallestDisplacement(20.0f);
+        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
 
@@ -737,5 +738,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fragmentTransaction.replace(R.id.frame1, fragment, fragment.toString());
         fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+    }
+
+    private void setDirections()
+    {   Object[] dataTransfer = new Object[3];
+        String url = getDirectionUrl();
+        GetDirectionData gdd = new GetDirectionData();
+        dataTransfer[0] =mMap;
+        dataTransfer[1]= url;
+        dataTransfer[2] = new LatLng(Double.valueOf(lat),Double.valueOf(longi));
+
+
+        gdd.execute(dataTransfer);
+
+    }
+    private String getDirectionUrl() {
+        StringBuilder gDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return null;
+        }
+        Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        gDirectionUrl.append("origin="+currentLocation.getLatitude()+","+currentLocation.getLongitude());
+        gDirectionUrl.append("&destination="+24.879239+","+67.018527);
+        gDirectionUrl.append("&key="+"AIzaSyA4ja7O-DvuqA6ivaurF3_FJUuXneVh63s");
+        return (gDirectionUrl.toString());
     }
 }
