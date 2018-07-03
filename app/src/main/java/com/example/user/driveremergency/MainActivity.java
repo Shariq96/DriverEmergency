@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.util.Log;
 
@@ -39,8 +40,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.driveremergency.Common.Common;
@@ -130,19 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PolylineOptions polylineOptions, blackPolylineOptions;
     private Polyline blackPolyline, greyPolyline;
     private IGoogleApi mService;
-
-
-
-    CancelationFragment cf = new CancelationFragment();
-
-    private LatLng[] ltlong = new LatLng[3];
-
-    String hello;
-    String url = "http://192.168.0.148:51967/api/useracc/postnotifyUser";
-    String token = FirebaseInstanceId.getInstance().getToken();
-    String mymob = "03131313131";
-    private Location mLastLocation;
-
     Runnable drawPathRunnable = new Runnable() {
         @Override
         public void run() {
@@ -170,9 +161,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     pickupLocationMarker.setRotation(getBearing(startPosition,newPos));
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
-                            .target(newPos)
-                            .zoom(15.5f)
-                            .build()
+                                    .target(newPos)
+                                    .zoom(15.5f)
+                                    .build()
                     ));
                 }
             });
@@ -180,6 +171,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             handler.postDelayed(this,3000);
         }
     };
+    CancelationFragment cf = new CancelationFragment();
+    String hello;
+    String url = "http://192.168.0.148:51967/api/useracc/postnotifyUser";
+    String token = FirebaseInstanceId.getInstance().getToken();
+    String mymob = "03131313131";
+    private SwitchCompat mStatus;
+    private TrackLocation Locate;
+    private LatLng[] ltlong = new LatLng[3];
+    private Location mLastLocation;
+    private TextView mStatusText;
 
 
     private float getBearing(LatLng startPosition, LatLng endPosition) {
@@ -206,26 +207,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             checkLocationPermission();
         }
 
+        Locate = new TrackLocation(getApplicationContext());
+
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
 
-
-
+        mStatusText = findViewById(R.id.mStatusText);
+        mStatus = findViewById(R.id.status_switch);
         f2 = (FrameLayout)findViewById(R.id.frame1);
         fl = (FrameLayout)findViewById(R.id.frame);
-        btn1 = (Button)findViewById(R.id.button2);
+        /*btn1 = (Button)findViewById(R.id.button2);
         btn1.setVisibility(GONE);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,15 +244,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment2(cf);
             }
         });
-
+*/
+        mStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true) {
+                    mStatusText.setText("Online");
+                } else {
+                    mStatusText.setText("Offline");
+                }
+            }
+        });
 
         mGeoDataClient = Places.getGeoDataClient(this, null);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
 
 
         polyLineList = new ArrayList<>();
-        btnGo = (Button)findViewById(R.id.btnGo);
-        edtPlace = (EditText)findViewById(R.id.edt_Place);
+        btnGo = (Button) findViewById(R.id._SearchDirections);
+        edtPlace = (EditText) findViewById(R.id._destionation_route);
 
 
         btnGo.setOnClickListener(new View.OnClickListener() {
@@ -270,6 +290,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         double destinationLng = 67.151115;
         String requestApi = null;
 
+        String requestApi1 = null;
+        String requestApi2 = null;
+
         try {
             requestApi = "https://maps.googleapis.com/maps/api/directions/json?"+
                     "mode=driving&"+
@@ -278,6 +301,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     "destination="+destiantionLat+","+destinationLng+"&"+
                     "key="+"AIzaSyC6RCXIx_uZBrlUjS037Ggi0Ml5erS17mI";
                     Log.d("requestApi", requestApi);
+
+         /*   requestApi1 = "https://maps.googleapis.com/maps/api/directions/json?"+
+                    "mode=driving&"+
+                    "transit_routing_preference=less_driving&"+
+                    "origin="+curentLocation.latitude+","+curentLocation.longitude+"&"+
+                    "destination="+destiantionLat+","+destinationLng+"&"+
+                    "key="+"AIzaSyC6RCXIx_uZBrlUjS037Ggi0Ml5erS17mI";
+            Log.d("requestApi", requestApi);
+
+            requestApi2 = "https://maps.googleapis.com/maps/api/directions/json?"+
+                    "mode=driving&"+
+                    "transit_routing_preference=less_driving&"+
+                    "origin="+curentLocation.latitude+","+curentLocation.longitude+"&"+
+                    "destination="+destiantionLat+","+destinationLng+"&"+
+                    "key="+"AIzaSyC6RCXIx_uZBrlUjS037Ggi0Ml5erS17mI";
+            Log.d("requestApi", requestApi);*/
+
 
                     mService.getPath(requestApi)
                             .enqueue(new retrofit2.Callback<String>() {
@@ -367,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    //copied method
     private List decodePoly(String encoded) {
 
         List poly = new ArrayList();
@@ -550,17 +591,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_history) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_howitworks) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_policies) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_setting) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_signout) {
 
         }
 
@@ -639,7 +680,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
 
-        MarkerOptions options = new MarkerOptions();
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 

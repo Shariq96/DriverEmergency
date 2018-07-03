@@ -6,61 +6,61 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
-<string name="action_sign_in_short">Sign in</string>
-<string name="error_invalid_email">This email address is invalid</string>
-<string name="error_invalid_password">This password is too short</string>
-<string name="error_incorrect_password">This password is incorrect</string>
-<string name="error_field_required">This field is required</string>
-<string name="permission_rationale">"Contacts permissions are needed for providing email
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-<string name="facebook_app_id">1639411012818943</string>
-<string name="fb_login_protocol_scheme">fb1639411012818943</string>
-<string name="title_activity_mapss">MapsActivity</string>
+    <string name="facebook_app_id">1639411012818943</string>
+    <string name="fb_login_protocol_scheme">fb1639411012818943</string>
+    <string name="title_activity_mapss">MapsActivity</string>
 
-<string name="navigation_drawer_open">Open navigation drawer</string>
-<string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-<string name="action_settings">Settings</string>
-<string name="title_activity_map">Map</string>
-<string name="title_activity_main2">Main2Activity</string>
-<string name="hint_username">Username or Phone Number</string>
-<string name="hint_pass">Password</string>
-<string name="txt_sign_up">SignUp Here!</string>
-<string name="txt_forget">Forget Password?</string>
-<string name="desc">Image Not loaded</string>
-<string name="chk_save_pass">Save Password</string>
-<string name="signup_here">Signup Here!</string>
-<string name="forget_password">Forget Password</string>
-<string name="save_password">Save Password</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="hint_username">Username or Phone Number</string>
+    <string name="hint_pass">Password</string>
+    <string name="txt_sign_up">SignUp Here!</string>
+    <string name="txt_forget">Forget Password?</string>
+    <string name="desc">Image Not loaded</string>
+    <string name="chk_save_pass">Save Password</string>
+    <string name="signup_here">Signup Here!</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="save_password">Save Password</string>
 
     //RegistrationScreenStrings
-<string name="txt_or">OR</string>
-<string name="txt_agreement">By Clicking “Register”, you agree to Terms and Conditions and Privacy Policy.</string>
-<string name="fill_username">Username</string>
-<string name="fill_pass">Password</string>
-<string name="fill_Phone">Phone Number</string>
-<string name="fill_cnic">Email Address</string>
+    <string name="txt_or">OR</string>
+    <string name="txt_agreement">By Clicking “Register”, you agree to Terms and Conditions and Privacy Policy.</string>
+    <string name="fill_username">Username</string>
+    <string name="fill_pass">Password</string>
+    <string name="fill_Phone">Phone Number</string>
+    <string name="fill_cnic">Email Address</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-<string name="hello_blank_fragment">Hello blank fragment</string>
-<string name="title_activity_map_screen">MapScreen</string>
-<string name="title_home">Home</string>
-<string name="title_dashboard">Dashboard</string>
-<string name="title_notifications">Notifications</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_map_screen">MapScreen</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 
     <!-- Bottom Nav Icons -->
-<string name="first">Normal</string>
-<string name="sec">Critical</string>
-<string name="third">Pediatric</string>
-<string name="fourth">DeadBody</string>
-<string name="history">History</string>
-<string name="settings">Settings</string>
-<string name="about_us">About Us</string>
-<string name="how_it_works">How it works</string>
-<string name="policies">Policies</string>
-<string name="sign_out">Sign Out</string>
+    <string name="first">Normal</string>
+    <string name="sec">Critical</string>
+    <string name="third">Pediatric</string>
+    <string name="fourth">DeadBody</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
+    <string name="about_us">About Us</string>
+    <string name="how_it_works">How it works</string>
+    <string name="policies">Policies</string>
+    <string name="sign_out">Sign Out</string>
 
     <string name="farrukh_dilawar">Farrukh Dilawar</string>
     <string name="farrukhdilawar_pafkiet_com_pk">farrukhdilawar@pafkiet.com.pk</string>
@@ -78,4 +78,9 @@
     <string name="met_an_accident">Met an Accident</string>
     <string name="heavy_traffic">Heavy Traffic</string>
     <string name="ambulance_broke_down">Ambulance Broke Down</string>
+    <string name="submit">submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="rate_the_driving">Rate the Customer</string>
+    <string name="share_your_experience_or_any_suggestion">Any Suggestion or Comments</string>
+    <string name="title_activity_accept_trip">Accept_trip</string>
 </resources>

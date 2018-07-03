@@ -37,7 +37,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"
+            android:label=" "
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -60,8 +60,9 @@
         <service
             android:name=".RegistrationIntentService"
             android:exported="false" />
-        <service android:name=".TrackerGps"
-            android:exported="false"/>
+        <service
+            android:name=".TrackerGps"
+            android:exported="false" />
 
         <receiver
             android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
@@ -74,6 +75,12 @@
                 <category android:name="com.fc.debug" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".feedback" />
+        <activity
+            android:name=".Accept_trip"
+            android:label="@string/title_activity_accept_trip"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

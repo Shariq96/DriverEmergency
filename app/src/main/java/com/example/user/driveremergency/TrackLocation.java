@@ -1,6 +1,5 @@
 package com.example.user.driveremergency;
 
-import android.*;
 import android.Manifest;
 import android.app.Service;
 import android.content.Context;
@@ -13,27 +12,24 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
 /**
  * Created by User on 2/16/2018.
  */
 
-public class GpsTracker extends Service implements LocationListener {
+public class TrackLocation extends Service implements LocationListener {
+    private static final long MIN_DISTANCE_FOR_UPDTE = 10;
+    private static final long MIN_TIME_FOR_UPDTE = 1000 * 60 * 1;
     private final Context mContext;
+    protected LocationManager locationManager;
     boolean isGpsEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
-
     Location location;
     double latitude;
     double longituted;
 
-    private static final long MIN_DISTANCE_FOR_UPDTE = 10;
-    private static final long MIN_TIME_FOR_UPDTE = 1000 * 60 * 1;
-    protected LocationManager locationManager;
-
-    public GpsTracker(Context context) {
+    public TrackLocation(Context context) {
         this.mContext = context;
         getLocation();
     }
@@ -65,12 +61,10 @@ public class GpsTracker extends Service implements LocationListener {
                 }
                 if (isGpsEnabled) {
                     if (location == null) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME_FOR_UPDTE,MIN_DISTANCE_FOR_UPDTE,this);
-                        if (locationManager!=null)
-                        {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_FOR_UPDTE, MIN_DISTANCE_FOR_UPDTE, this);
+                        if (locationManager != null) {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location!=null)
-                            {
+                            if (location != null) {
                                 latitude = location.getLatitude();
                                 longituted = location.getLongitude();
                             }
@@ -83,34 +77,32 @@ public class GpsTracker extends Service implements LocationListener {
         }
         return location;
     }
-    public  void stopUsingGPS()
-    {
-        if (locationManager!=null)
-        {
+
+    public void stopUsingGPS() {
+        if (locationManager != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
-                }
-                locationManager.removeUpdates(GpsTracker.this);
+            }
+            locationManager.removeUpdates(TrackLocation.this);
         }
     }
-    public double getLatitude(){
-        if (location != null)
-        {
+
+    public double getLatitude() {
+        if (location != null) {
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
-    public double getLongituted(){
-        if (location != null)
-        {
+    public double getLongituted() {
+        if (location != null) {
             longituted = location.getLongitude();
         }
         return longituted;
     }
-    public boolean CanGetLocation()
-    {
+
+    public boolean CanGetLocation() {
         return this.canGetLocation;
     }
 
