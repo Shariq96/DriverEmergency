@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location lastLocation;
     public static Location  myloc;
     JSONObject jbobj;
+    SharedPreferences.Editor editor;
     public static FrameLayout fl , f2;
     public static String driver_Id ="5";
     public static String Trip_id;
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng[] ltlong = new LatLng[3];
     private Location mLastLocation;
     private TextView mStatusText;
+    private SharedPreferences MyPref;
 
 
     private float getBearing(LatLng startPosition, LatLng endPosition) {
@@ -225,9 +228,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = MyPref.edit();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
 
@@ -602,7 +606,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_signout) {
-
+            editor.putBoolean("login", false);
+            editor.apply();
+            startActivity(new Intent(MainActivity.this, LoginController.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
