@@ -77,6 +77,8 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".cardview"></activity>
+
         <activity android:name=".feedback" />
         <activity
             android:name=".Accept_trip"

@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.example.user.driveremergency.Common.Common;
 import com.example.user.driveremergency.Remote.IGoogleApi;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -72,6 +73,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
@@ -220,21 +222,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         OkHttpClient Client = new OkHttpClient();
         myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigattionView = findViewById(R.id.nav_view);
+        navigattionView.setNavigationItemSelectedListener(this);
         MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = MyPref.edit();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
@@ -633,19 +636,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
+
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_about) {
-            // Handle the camera action
-        } else if (id == R.id.nav_history) {
-
-        } else if (id == R.id.nav_howitworks) {
+        if (id == R.id.nav_history) {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_policies) {
 
-        } else if (id == R.id.nav_setting) {
+        } else if (id == R.id.nav_about) {
+
+        } else if (id == R.id.nav_howitworks) {
+
 
         } else if (id == R.id.nav_signout) {
             editor.putBoolean("login", false);
