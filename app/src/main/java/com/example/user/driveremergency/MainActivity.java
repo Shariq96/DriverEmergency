@@ -230,7 +230,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -238,6 +240,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         NavigationView navigattionView = findViewById(R.id.nav_view);
         navigattionView.setNavigationItemSelectedListener(this);
+
+
         MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = MyPref.edit();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
@@ -644,14 +648,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (id == R.id.nav_history) {
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_policies) {
 
         } else if (id == R.id.nav_about) {
 
-        } else if (id == R.id.nav_howitworks) {
 
+        } else if (id == R.id.nav_howitworks) {
+            startActivity(new Intent(MainActivity.this, ride_acceptance.class));
+            finish();
 
         } else if (id == R.id.nav_signout) {
             editor.putBoolean("login", false);
@@ -660,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
