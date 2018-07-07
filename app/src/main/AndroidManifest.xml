@@ -35,7 +35,15 @@
         <activity
             android:name=".MainActivity"
             android:label=" "
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity android:name=".LoginController" />
 
         <meta-data
@@ -78,17 +86,7 @@
         <activity android:name=".cardview"></activity>
 
         <activity android:name=".feedback" />
-        <activity
-            android:name=".Accept_trip"
-            android:label="@string/title_activity_accept_trip"
-            android:theme="@style/AppTheme" />
         <activity android:name=".ride_acceptance">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
     </application>
