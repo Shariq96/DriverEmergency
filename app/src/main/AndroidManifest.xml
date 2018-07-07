@@ -62,7 +62,8 @@
             android:exported="false" />
         <service
             android:name=".TrackerGps"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"

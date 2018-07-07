@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -35,6 +36,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.user.driveremergency.MainActivity.currentLocationlatlang;
+
 /**
  * Created by User on 2/16/2018.
  */
@@ -52,17 +55,22 @@ public class TrackerGps extends Service implements LocationListener, GoogleApiCl
     private static final long MIN_DISTANCE_FOR_UPDTE = 10;
     private static final long MIN_TIME_FOR_UPDTE = 1000 * 60 * 1;
     LocationManager locationManager;
-
+    public String url = "http://192.168.0.102:51967/api/Driver/post";
     Timer mTimer;
     String TAG = "LOCAION_SEND";
-    public String url = "http://192.168.0.104:51967/api/Driver/post";
-
+    SharedPreferences myPref;
+    double lat, lng;
+    String locObj1;
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
+            lat = currentLocationlatlang.latitude;
+            lng = currentLocationlatlang.longitude;
+            locObj1 = String.valueOf(lat) + "," + String.valueOf(lng);
             HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
-            urlBuilder.addQueryParameter("id", "1");
-            urlBuilder.addQueryParameter("locObj", locObj.toString());
+            urlBuilder.addQueryParameter("id", myPref.getString("id", "1"));
+            urlBuilder.addQueryParameter("status", "1");
+            urlBuilder.addQueryParameter("locObj", locObj1);
             String url1 = urlBuilder.build().toString();
             Request request = new Request.Builder()
                     .url(url1)
@@ -99,6 +107,7 @@ public class TrackerGps extends Service implements LocationListener, GoogleApiCl
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         mTimer = new Timer();
         mTimer.schedule(timerTask, 10000, 30 * 1000);
+        myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
         super.onCreate();
     }
 
@@ -124,6 +133,12 @@ public class TrackerGps extends Service implements LocationListener, GoogleApiCl
 
 //        return super.onStartCommand(intent,flags,startId);
         return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        this.mTimer.cancel();
+
     }
 
     @Nullable
