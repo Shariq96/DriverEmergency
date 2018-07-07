@@ -39,10 +39,10 @@
             android:name=".MainActivity"
             android:label=" "
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".LoginController"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAd1s0XsDExOBq_7V2zA5WVUZGeGQjYvYw" />
+            android:value="AIzaSyD4sUrqiIzIZTc7_Dx8IFOmcYTWldqeTpw" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -62,7 +62,8 @@
             android:exported="false" />
         <service
             android:name=".TrackerGps"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"

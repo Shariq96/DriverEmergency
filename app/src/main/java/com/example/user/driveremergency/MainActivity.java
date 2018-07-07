@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -80,9 +81,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -110,17 +113,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location lastLocation;
     public static Location  myloc;
     JSONObject jbobj;
+    SharedPreferences.Editor editor;
     public static FrameLayout fl , f2;
     public static String driver_Id ="5";
     public static String Trip_id;
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
     public static String mobile_no, lat,longi, userToken,customer_id,click_action;
-    private LatLng currentLocationlatlang;
+    public static LatLng currentLocationlatlang;
    public static  Button btn1;
-
-   //ambulance animation
-
+    public String url1 = "http://192.168.0.102:51967/api/Driver/post";
     private List<LatLng> polyLineList;
     private Marker pickupLocationMarker;
     private float v;
@@ -174,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     CancelationFragment cf = new CancelationFragment();
     String hello;
     String url = "http://192.168.0.148:51967/api/useracc/postnotifyUser";
+    //ambulance animation
+    SharedPreferences myPref;
+    String TAG = "LOCAION_SEND";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
     private SwitchCompat mStatus;
@@ -181,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng[] ltlong = new LatLng[3];
     private Location mLastLocation;
     private TextView mStatusText;
+    private SharedPreferences MyPref;
+    private double lat1, lng1;
+    private String locObj1;
 
 
     private float getBearing(LatLng startPosition, LatLng endPosition) {
@@ -210,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Locate = new TrackLocation(getApplicationContext());
 
 
-
-
+        OkHttpClient Client = new OkHttpClient();
+        myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -225,9 +233,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = MyPref.edit();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
                 new IntentFilter("myFunction"));
 
@@ -249,8 +258,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true) {
+                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+                    startService(intent);
                     mStatusText.setText("Online");
                 } else {
+                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+                    getApplicationContext().stopService(intent);
+                    run();
                     mStatusText.setText("Offline");
                 }
             }
@@ -281,6 +295,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mService = Common.getGoogleApi();
+    }
+
+    private void run() {
+        lat1 = currentLocationlatlang.latitude;
+        lng1 = currentLocationlatlang.longitude;
+        locObj1 = String.valueOf(lat1) + "," + String.valueOf(lng1);
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url1).newBuilder();
+        urlBuilder.addQueryParameter("id", myPref.getString("id", "1"));
+        urlBuilder.addQueryParameter("status", "2");
+        urlBuilder.addQueryParameter("locObj", locObj1);
+        String url1 = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+                .url(url1)
+                .build();
+        Client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "UnSuck");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String myResponse = response.body().string();
+
+                myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
+                myResponse = myResponse.replace("\\", "");
+                String hello = myResponse;
+                Log.d(TAG, "SuccessFull");
+
+            }
+        });
+
     }
 
     private void getDirections() {
@@ -602,7 +648,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_signout) {
-
+            editor.putBoolean("login", false);
+            editor.apply();
+            startActivity(new Intent(MainActivity.this, LoginController.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
