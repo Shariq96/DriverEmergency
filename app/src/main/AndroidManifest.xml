@@ -40,10 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label=" "
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".LoginController"></activity>
         <activity android:name=".HistoryActivity"></activity>
         <activity android:name=".cardview"></activity>
@@ -85,11 +82,8 @@
         </receiver>
 
 
-        <activity android:name=".cardview" />
         <activity android:name=".feedback" />
 
         <activity android:name=".ride_acceptance"></activity>
-        <activity android:name=".navigationmap"></activity>
     </application>
-
 </manifest>

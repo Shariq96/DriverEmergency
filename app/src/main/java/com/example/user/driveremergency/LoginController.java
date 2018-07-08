@@ -30,6 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.user.driveremergency.MainActivity.driver_Id;
 public class LoginController extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
@@ -164,6 +165,7 @@ public class LoginController extends AppCompatActivity {
                     pass1 = jsonObj.getString("pw");
                     name = jsonObj.getString("Driver_name");
                     id = jsonObj.getString("Driver_id");
+                    driver_Id = id;
                     contact = jsonObj.getString("MobileNo");
                     token = jsonObj.getString("token_no");
                     isBlocked = jsonObj.getString("isBlocked");
@@ -200,7 +202,6 @@ public class LoginController extends AppCompatActivity {
                     }
 
                 });
-
 
             }
 

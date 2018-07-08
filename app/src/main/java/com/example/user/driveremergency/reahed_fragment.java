@@ -28,9 +28,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.user.driveremergency.MainActivity.Trip_id;
+
 import static com.example.user.driveremergency.MainActivity.btn1;
 import static com.example.user.driveremergency.MainActivity.fl;
+import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 
 /**

@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
     MapView mapView;
+    public static String driver_Id;
     private GoogleApiClient client;
     private LocationRequest request;
     private Location lastLocation;
@@ -123,8 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     JSONObject jbobj;
     SharedPreferences.Editor editor;
     public static FrameLayout fl , f2;
-    public static String driver_Id ="5";
-    public static String Trip_id;
+
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
     public static String mobile_no, lat,longi, userToken,customer_id,click_action;
@@ -181,14 +181,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             handler.postDelayed(this,3000);
         }
     };
-    CancelationFragment cf = new CancelationFragment();
-    String hello;
-    String url = "http://192.168.0.101:51967/api/useracc/postnotifyUser";
+    public static String mymob = "03131313131";
     //ambulance animation
     SharedPreferences myPref;
     String aatag = "LOCAION_SEND";
     String token = FirebaseInstanceId.getInstance().getToken();
-    String mymob = "03131313131";
+    //   CancelationFragment cf = new CancelationFragment();
+    String hello;
     private SwitchCompat mStatus;
     private TrackLocation Locate;
     private LatLng[] ltlong = new LatLng[3];
@@ -215,104 +214,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     return -1;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
+    OkHttpClient Client = new OkHttpClient();
+    private BroadcastReceiver mMsgReciver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            displayAlert(intent);
         }
-
-        Locate = new TrackLocation(getApplicationContext());
-
-
-        OkHttpClient Client = new OkHttpClient();
-        myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-
-
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        mapView = findViewById(R.id.map);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigattionView = findViewById(R.id.nav_view);
-        navigattionView.setNavigationItemSelectedListener(this);
-
-
-        MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        editor = MyPref.edit();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
-                new IntentFilter("myFunction"));
-
-        mStatusText = findViewById(R.id.mStatusText);
-        mStatus = findViewById(R.id.status_switch);
-        f2 = (FrameLayout)findViewById(R.id.frame1);
-        fl = (FrameLayout)findViewById(R.id.frame);
-        btn1 = (Button) findViewById(R.id._SearchDirections);
-        btn1.setVisibility(GONE);
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                f2.setVisibility(v.VISIBLE);
-                replaceFragment2(cf);
-            }
-        });
-
-        mStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == true) {
-                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
-                    startService(intent);
-                    mStatusText.setText("Online");
-                } else {
-                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
-                    getApplicationContext().stopService(intent);
-                    run();
-                    mStatusText.setText("Offline");
-                }
-            }
-        });
-
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
-
-        polyLineList = new ArrayList<>();
-        //  btnGo = (Button) findViewById(R.id._SearchDirections);
-        edtPlace = (EditText) findViewById(R.id._destionation_route);
-
-
-     /* btnGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              //  destination = edtPlace.getText().toString();
-                //replacing space with + for fetching data
-           //     destination = destination.replace(" ", "+");
-                destination = "SHAUKAT+OMAR+MEMORIAL+HOSPITAL";
-                Log.d("AnimationTesting: ", destination);
-
-                getDirections();
-
-
-            }
-        });*/
-
-        mService = Common.getGoogleApi();
-    }
-
-
+    };
     private void run() {
         lat1 = currentLocationlatlang.latitude;
         lng1 = currentLocationlatlang.longitude;
@@ -509,113 +419,122 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMsgReciver);
         super.onDestroy();
     }
-    private BroadcastReceiver mMsgReciver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            displayAlert(intent);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
         }
-    };
-        jbobject jb = new jbobject();
 
-        private void displayAlert(Intent intent) {
+        Locate = new TrackLocation(getApplicationContext());
 
-        mobile_no = intent.getStringExtra("usermobile_no");
-        lat =intent.getStringExtra("lat");
-        userToken = intent.getStringExtra("token");
-        customer_id = intent.getStringExtra("customer_id");
-        longi =intent.getStringExtra("longi");
-        click_action = intent.getStringExtra("ClickAction");
-        if (click_action == null) {
-            final LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-            r.play();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setView(R.id.ride_accept);
-            builder.setMessage("EMERGENCY RIDE")
-                    .setCancelable(
-                            false)
-                    .setPositiveButton("Accept",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    ReachedLoc startRide = new ReachedLoc();
-                                    fl.setVisibility(View.VISIBLE);
-                                    replaceFragment(startRide);
-                                    dialog.cancel();
-                                    btn1.setVisibility(View.VISIBLE);
-                                    token = FirebaseInstanceId.getInstance().getToken();
-                                    jbobj = jb.resptoreq(mymob, lat, longi, userToken, token, mobile_no);
-                                    try {
-                                        setDirections();
-                                        post(url, jbobj);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    r.stop();
 
-                                }
-                            }).setNegativeButton("Reject",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                            r.stop();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-        else
-            fl.setVisibility(GONE);
-            btn1.setVisibility(GONE);
-    }
+        OkHttpClient Client = new OkHttpClient();
+        myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
 
-    OkHttpClient Client = new OkHttpClient();
 
-    public void post(String url, JSONObject jbobj) throws IOException {
-        RequestBody body = RequestBody.create(JSON,jbobj.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        Client.newCall(request).enqueue(new Callback() {
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        mapView = findViewById(R.id.map);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigattionView = findViewById(R.id.nav_view);
+        navigattionView.setNavigationItemSelectedListener(this);
+
+
+        MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = MyPref.edit();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
+                new IntentFilter("myFunction"));
+
+        mStatusText = findViewById(R.id.mStatusText);
+        mStatus = findViewById(R.id.status_switch);
+        //      f2 = (FrameLayout)findViewById(R.id.frame1);
+        //       fl = (FrameLayout)findViewById(R.id.frame);
+        //     btn1 = (Button) findViewById(R.id._SearchDirections);
+        //     btn1.setVisibility(GONE);
+        //     btn1.setOnClickListener(new View.OnClickListener() {
+        //         @Override
+        //         public void onClick(View v) {
+        //              f2.setVisibility(v.VISIBLE);
+        //              replaceFragment2(cf);
+        //          }
+        //      });
+
+        mStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String myResponse = response.body().string();
-
-                myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
-                myResponse = myResponse.replace("\\", "");
-
-                //JSONObject jarray = null;
-                //  jarray = new JSONObject(myResponse);
-                //api_pass = jarray.getString("password");
-
-                //api_pass = jarray.getJSONObject(0).getString("password");
-                hello = myResponse;
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (hello.equals("false")) {
-                            Toast.makeText(getApplicationContext(),"tch tch",Toast.LENGTH_LONG).show();
-
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_LONG).show();
-                            Trip_id = hello;
-                            btn1.setVisibility(View.VISIBLE);
-
-                        }
-                    }
-                });
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true) {
+                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+                    startService(intent);
+                    mStatusText.setText("Online");
+                } else {
+                    Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+                    getApplicationContext().stopService(intent);
+                    run();
+                    mStatusText.setText("Offline");
+                }
             }
         });
 
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
+
+        polyLineList = new ArrayList<>();
+        //  btnGo = (Button) findViewById(R.id._SearchDirections);
+        edtPlace = (EditText) findViewById(R.id._destionation_route);
+
+
+     /* btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  destination = edtPlace.getText().toString();
+                //replacing space with + for fetching data
+           //     destination = destination.replace(" ", "+");
+                destination = "SHAUKAT+OMAR+MEMORIAL+HOSPITAL";
+                Log.d("AnimationTesting: ", destination);
+
+                getDirections();
+
+
+            }
+        });*/
+
+        mService = Common.getGoogleApi();
     }
+
+        private void displayAlert(Intent intent) {
+            mobile_no = intent.getStringExtra("usermobile_no");
+            intent.getStringExtra("lat");
+            customer_id = intent.getStringExtra("customer_id");
+            userToken = intent.getStringExtra("token");
+            click_action = intent.getStringExtra("ClickAction");
+            longi = intent.getStringExtra("longi");
+            Intent intent1 = new Intent(MainActivity.this, ride_acceptance.class);
+            intent1.putExtra("mobile_no", intent.getStringExtra("usermobile_no"));
+            intent1.putExtra("lat ", intent.getStringExtra("lat"));
+            intent1.putExtra("usr_token ", userToken = intent.getStringExtra("token"));
+            intent1.putExtra("cust_id", customer_id = intent.getStringExtra("customer_id"));
+            intent1.putExtra("long ", longi = intent.getStringExtra("longi"));
+            intent1.putExtra("click_action", click_action = intent.getStringExtra("ClickAction"));
+            startActivity(intent1);
+    }
+
+
 
     @Override
     public void onBackPressed() {
