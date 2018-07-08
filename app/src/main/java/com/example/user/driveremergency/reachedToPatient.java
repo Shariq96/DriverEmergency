@@ -46,13 +46,13 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
 
     Button btn;
     View view;
-    String url = "http://192.168.0.104:51967/api/useracc/postStartRide";
+    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
     @Nullable
     @Override
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_reachedpatient,container,false);
-        btn = (Button)view.findViewById(R.id.btn_strtRide);
+        btn = (Button) view.findViewById(R.id.btn);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +102,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         urlBuilder.addQueryParameter("Trip_id",Trip_id);
         urlBuilder.addQueryParameter("Driver_id", driver_Id);
         urlBuilder.addQueryParameter("Customer_id",customer_id);
-        urlBuilder.addQueryParameter("StateUpdate", "Reached Patient and Start Ride");
+        urlBuilder.addQueryParameter("StateUpdate", "Reached to Patient");
         urlBuilder.addQueryParameter("Status_id","2");
         urlBuilder.addQueryParameter("userToken",userToken);
         String url1 = urlBuilder.build().toString();

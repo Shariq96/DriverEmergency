@@ -1,5 +1,6 @@
 package com.example.user.driveremergency;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,7 +42,7 @@ import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 public class reahed_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view, view1;
-    String url = "http://192.168.0.104:51967/api/useracc/postStartRide";
+    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable
@@ -49,7 +50,7 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_reached,container,false);
         view1 = getLayoutInflater().inflate(R.layout.activity_main,container,false);
-        btn = (Button)view.findViewById(R.id.btn_end);
+        btn = (Button) view.findViewById(R.id.end);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,8 +100,9 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
                         if (hello.equals("true")) {
                             Toast.makeText(getActivity().getApplicationContext(),"Donme",Toast.LENGTH_LONG).show();
                             fl.setVisibility(View.GONE);
-                            btn1.setVisibility(View.GONE);
-
+//                            btn1.setVisibility(View.GONE);
+                            Intent intent = new Intent(getActivity().getApplicationContext(), payment.class);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(), "tch tch", Toast.LENGTH_LONG).show();
 

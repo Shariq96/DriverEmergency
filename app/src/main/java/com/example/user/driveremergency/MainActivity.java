@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker currentLocation;
     public static final int REQUEST_LOCATION_CODE = 99;
-    public static String mobile_no, lat,longi, userToken,customer_id,click_action;
+    public static String mobile_no, lat, longi, userToken, customer_id, click_action, destlat, destlongi;
     public static LatLng currentLocationlatlang;
    public static  Button btn1;
     public String url1 = "http://192.168.0.101:51967/api/driver/post";
@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mStatusText = findViewById(R.id.mStatusText);
         mStatus = findViewById(R.id.status_switch);
         //      f2 = (FrameLayout)findViewById(R.id.frame1);
-        //       fl = (FrameLayout)findViewById(R.id.frame);
+        fl = (FrameLayout) findViewById(R.id.frame);
         //     btn1 = (Button) findViewById(R.id._SearchDirections);
         //     btn1.setVisibility(GONE);
         //     btn1.setOnClickListener(new View.OnClickListener() {
@@ -525,10 +525,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         private void displayAlert(Intent intent) {
             mobile_no = intent.getStringExtra("usermobile_no");
             lat = intent.getStringExtra("lat");
+            destlat = intent.getStringExtra("destlat");
             customer_id = intent.getStringExtra("customer_id");
             userToken = intent.getStringExtra("token");
             click_action = intent.getStringExtra("ClickAction");
             longi = intent.getStringExtra("longi");
+            destlongi = intent.getStringExtra("destlongi");
             Intent intent1 = new Intent(MainActivity.this, ride_acceptance.class);
             startActivityForResult(intent1, 12345);
             // startActivity(intent1);
@@ -675,22 +677,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        LatLng civiccenter = new LatLng(24.900394, 67.072483);
 
-        googleMap.addMarker(new MarkerOptions().position(civiccenter)
-                .title("Ambulance0"));
-
-        LatLng lyari = new LatLng(24.871741, 67.008319);
-        googleMap.addMarker(new MarkerOptions().position(lyari)
-                .title("Ambulance2"));
-
-        LatLng gurumandir = new LatLng(24.880173, 67.039353);
-        googleMap.addMarker(new MarkerOptions().position(gurumandir)
-                .title("Ambulance1"));
-
-        ltlong[0] = civiccenter;
-        ltlong[1] = gurumandir;
-        ltlong[2] = lyari;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -810,8 +797,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (resultCode == Activity.RESULT_OK) {
 
-            bottompanel.setVisibility(GONE);
-            bottomsheet.setVisibility(View.VISIBLE);
+            ReachedLoc startRide = new ReachedLoc();
+            fl.setVisibility(View.VISIBLE);
+            bottompanel.setVisibility(View.GONE);
+            replaceFragment(startRide);
 
         }
         if (resultCode == Activity.RESULT_CANCELED) {

@@ -36,7 +36,7 @@ import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 public class ReachedLoc extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://192.168.0.104:51967/api/useracc/postStartRide";
+    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable

@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".Splashscreen"></activity>
+        <activity android:name=".Splashscreen" />
         <activity
             android:name=".MainActivity"
             android:label=" "
@@ -40,10 +40,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginController" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".cardview" />
 
-        <activity android:name=".LoginController"></activity>
-        <activity android:name=".HistoryActivity"></activity>
-        <activity android:name=".cardview"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD4sUrqiIzIZTc7_Dx8IFOmcYTWldqeTpw" />
@@ -81,9 +81,9 @@
             </intent-filter>
         </receiver>
 
-
         <activity android:name=".feedback" />
-
-        <activity android:name=".ride_acceptance"></activity>
+        <activity android:name=".ride_acceptance" />
+        <activity android:name=".payment"></activity>
     </application>
+
 </manifest>
