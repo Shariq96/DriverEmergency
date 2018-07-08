@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -27,7 +28,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
-import android.text.Editable;
 import android.util.Log;
 
 import android.view.View;
@@ -44,22 +44,20 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.driveremergency.Common.Common;
 import com.example.user.driveremergency.Remote.IGoogleApi;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -69,11 +67,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
@@ -83,7 +79,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -96,6 +91,11 @@ import okhttp3.Response;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 import static android.view.View.GONE;
 
@@ -106,10 +106,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentChangeListner {
 
 
+    //Navigation
+
+    private static final String TAG = "MainActivity";
+    NavigationMapRoute navigationMapRoute;
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
     private GoogleMap mMap;
+    SupportMapFragment mapFragment;
+    MapView mapView;
     private GoogleApiClient client;
     private LocationRequest request;
     private Location lastLocation;
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String url = "http://192.168.0.101:51967/api/useracc/postnotifyUser";
     //ambulance animation
     SharedPreferences myPref;
-    String TAG = "LOCAION_SEND";
+    String aatag = "LOCAION_SEND";
     String token = FirebaseInstanceId.getInstance().getToken();
     String mymob = "03131313131";
     private SwitchCompat mStatus;
@@ -224,9 +230,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myPref = getSharedPreferences("MyPref", MODE_PRIVATE);
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mapView = findViewById(R.id.map);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -304,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mService = Common.getGoogleApi();
     }
 
+
     private void run() {
         lat1 = currentLocationlatlang.latitude;
         lng1 = currentLocationlatlang.longitude;
@@ -319,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "UnSuck");
+                Log.d(aatag, "UnSuck");
             }
 
             @Override
@@ -329,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 myResponse = myResponse.substring(1, myResponse.length() - 1); // yara
                 myResponse = myResponse.replace("\\", "");
                 String hello = myResponse;
-                Log.d(TAG, "SuccessFull");
+                Log.d(aatag, "SuccessFull");
 
             }
         });
@@ -523,6 +532,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(R.id.ride_accept);
             builder.setMessage("EMERGENCY RIDE")
                     .setCancelable(
                             false)
@@ -874,4 +884,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         gDirectionUrl.append("&key="+"AIzaSyA4ja7O-DvuqA6ivaurF3_FJUuXneVh63s");
         return (gDirectionUrl.toString());
     }
+
+
 }
