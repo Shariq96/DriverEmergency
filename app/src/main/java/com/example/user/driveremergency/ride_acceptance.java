@@ -33,8 +33,11 @@ import static android.view.View.GONE;
 import static com.example.user.driveremergency.MainActivity.JSON;
 import static com.example.user.driveremergency.MainActivity.btn1;
 import static com.example.user.driveremergency.MainActivity.fl;
+import static com.example.user.driveremergency.MainActivity.longi;
+import static com.example.user.driveremergency.MainActivity.mobile_no;
 import static com.example.user.driveremergency.MainActivity.mymob;
-
+import static com.example.user.driveremergency.MainActivity.userToken;
+import static com.example.user.driveremergency.MainActivity.lat;
 public class ride_acceptance extends AppCompatActivity {
     public static String Trip_id;
     CancelationFragment cf = new CancelationFragment();
@@ -45,20 +48,17 @@ public class ride_acceptance extends AppCompatActivity {
     private CardView bottompanel;
     private FrameLayout cancelfragment;
     private FrameLayout bottomsheet;
-    private String mobile_no;
-    private String lat;
+
     private Button ride_accept;
     private Button ride_cancel;
-    private String userToken;
-    private String longi, customer_id, click_action;
+
     private String token;
     private JSONObject jbobj;
-
+    jbobject jb = new jbobject();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_acceptance);
-        jbobject jb = new jbobject();
 
 
         ride_accept = findViewById(R.id.response_ride);
@@ -67,15 +67,6 @@ public class ride_acceptance extends AppCompatActivity {
         cancelfragment = findViewById(R.id.frame1);
         bottomsheet = findViewById(R.id.bottom_sheet);
         bottompanel = findViewById(R.id.bottom_panel);
-
-
-        Intent intent = getIntent();
-        mobile_no = intent.getStringExtra("mobile_no");
-        lat = intent.getStringExtra("lat");
-        userToken = intent.getStringExtra("usr_token");
-        customer_id = intent.getStringExtra("cust_id");
-        longi = intent.getStringExtra("long");
-        click_action = intent.getStringExtra("click_action");
 
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
@@ -170,7 +161,7 @@ public class ride_acceptance extends AppCompatActivity {
                         } else {
                             Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_LONG).show();
                             Trip_id = hello;
-                            btn1.setVisibility(View.VISIBLE);
+                            //  btn1.setVisibility(View.VISIBLE);
 
                         }
                     }

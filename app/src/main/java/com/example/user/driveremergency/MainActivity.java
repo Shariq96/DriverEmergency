@@ -78,6 +78,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,11 +93,6 @@ import okhttp3.Response;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 import static android.view.View.GONE;
 
@@ -110,13 +106,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Navigation
 
     private static final String TAG = "MainActivity";
-    NavigationMapRoute navigationMapRoute;
+
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
-    MapView mapView;
+
     public static String driver_Id;
     private GoogleApiClient client;
     private LocationRequest request;
@@ -424,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onDestroy();
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -443,8 +440,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mapView = findViewById(R.id.map);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -460,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         cancelfragment = findViewById(R.id.frame1);
-        bottomsheet = findViewById(R.id.bottom_sheet);
+        bottomsheet = findViewById(R.id.bottom_acceptance);
         bottompanel = findViewById(R.id.bottom_panel);
 
 
@@ -499,6 +494,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+
         mGeoDataClient = Places.getGeoDataClient(this, null);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
 
@@ -528,18 +524,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         private void displayAlert(Intent intent) {
             mobile_no = intent.getStringExtra("usermobile_no");
-            intent.getStringExtra("lat");
+            lat = intent.getStringExtra("lat");
             customer_id = intent.getStringExtra("customer_id");
             userToken = intent.getStringExtra("token");
             click_action = intent.getStringExtra("ClickAction");
             longi = intent.getStringExtra("longi");
             Intent intent1 = new Intent(MainActivity.this, ride_acceptance.class);
-            intent1.putExtra("mobile_no", intent.getStringExtra("usermobile_no"));
-            intent1.putExtra("lat ", intent.getStringExtra("lat"));
-            intent1.putExtra("usr_token ", userToken = intent.getStringExtra("token"));
-            intent1.putExtra("cust_id", customer_id = intent.getStringExtra("customer_id"));
-            intent1.putExtra("long ", longi = intent.getStringExtra("longi"));
-            intent1.putExtra("click_action", click_action = intent.getStringExtra("ClickAction"));
             startActivityForResult(intent1, 12345);
             // startActivity(intent1);
     }
