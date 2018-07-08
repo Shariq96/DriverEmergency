@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static String mobile_no, lat,longi, userToken,customer_id,click_action;
     public static LatLng currentLocationlatlang;
    public static  Button btn1;
-    public String url1 = "http://192.168.0.102:51967/api/Driver/post";
+    public String url1 = "http://192.168.0.101:51967/api/driver/post";
     private List<LatLng> polyLineList;
     private Marker pickupLocationMarker;
     private float v;
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     };
     CancelationFragment cf = new CancelationFragment();
     String hello;
-    String url = "http://192.168.0.148:51967/api/useracc/postnotifyUser";
+    String url = "http://192.168.0.101:51967/api/useracc/postnotifyUser";
     //ambulance animation
     SharedPreferences myPref;
     String TAG = "LOCAION_SEND";
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mStatus = findViewById(R.id.status_switch);
         f2 = (FrameLayout)findViewById(R.id.frame1);
         fl = (FrameLayout)findViewById(R.id.frame);
-        /*btn1 = (Button)findViewById(R.id.button2);
+        btn1 = (Button) findViewById(R.id._SearchDirections);
         btn1.setVisibility(GONE);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment2(cf);
             }
         });
-*/
+
         mStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -282,11 +282,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         polyLineList = new ArrayList<>();
-        btnGo = (Button) findViewById(R.id._SearchDirections);
+        //  btnGo = (Button) findViewById(R.id._SearchDirections);
         edtPlace = (EditText) findViewById(R.id._destionation_route);
 
 
-        btnGo.setOnClickListener(new View.OnClickListener() {
+     /* btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               //  destination = edtPlace.getText().toString();
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             }
-        });
+        });*/
 
         mService = Common.getGoogleApi();
     }
@@ -534,6 +534,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     replaceFragment(startRide);
                                     dialog.cancel();
                                     btn1.setVisibility(View.VISIBLE);
+                                    token = FirebaseInstanceId.getInstance().getToken();
                                     jbobj = jb.resptoreq(mymob, lat, longi, userToken, token, mobile_no);
                                     try {
                                         setDirections();
@@ -570,7 +571,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(getApplicationContext(), "somethng went wrong", Toast.LENGTH_LONG).show();
+
             }
 
             @Override

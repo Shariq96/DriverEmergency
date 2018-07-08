@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +34,7 @@ public class LoginController extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     public static boolean LogedIn = false;
-    public String url = "http://192.168.0.102:51967//api/driver/Login";
+    public String url = "http://192.168.0.101:51967//api/driver/Login";
     EditText mobile_no;
     EditText pass;
     CheckBox sv_pass;
@@ -48,6 +49,7 @@ public class LoginController extends AppCompatActivity {
     SharedPreferences pref;
     JSONArray array = null;
     JSONObject jsonObj = null;
+    String token_my;
 
     OkHttpClient client = new OkHttpClient();
     private FirebaseAuth mAuth;
@@ -59,7 +61,7 @@ public class LoginController extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-
+        token_my = FirebaseInstanceId.getInstance().getToken();
         mobile_no = (EditText) findViewById(R.id.etext1);
         pass = (EditText) findViewById(R.id.etext2);
         sv_pass = (CheckBox) findViewById(R.id.chk_pass);
@@ -94,8 +96,15 @@ public class LoginController extends AppCompatActivity {
                 try {
                     mobno = mobile_no.getText().toString();
                     password = pass.getText().toString();
-                    run();
+                    if (mobno.isEmpty()) {
+                        mobile_no.setError("empty Field");
+                        if (password.isEmpty()) {
+                            pass.setError("empty Field");
 
+                        }
+                    } else {
+                        run();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -129,6 +138,7 @@ public class LoginController extends AppCompatActivity {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("mobile_no", mobno);
         urlBuilder.addQueryParameter("password", password);
+        urlBuilder.addQueryParameter("token", token_my);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)
@@ -157,6 +167,7 @@ public class LoginController extends AppCompatActivity {
                     contact = jsonObj.getString("MobileNo");
                     token = jsonObj.getString("token_no");
                     isBlocked = jsonObj.getString("isBlocked");
+
                     String new1 = pass1;
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -166,7 +177,8 @@ public class LoginController extends AppCompatActivity {
                 LoginController.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (isBlocked == null) {
+
+                        if (isBlocked == "null") {
                             Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_LONG).show();
                             editor.putBoolean("login", true);
                             editor.putString("name", name);

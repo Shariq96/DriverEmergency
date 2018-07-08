@@ -56,7 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
         persons = new ArrayList<>();
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
-        urlBuilder.addQueryParameter("id", "5");
+        urlBuilder.addQueryParameter("id", id);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)

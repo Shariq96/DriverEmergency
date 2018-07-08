@@ -39,7 +39,7 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
     RadioGroup radioReasongGrp;
     int selectedId;
     String val;
-    String url = "http://192.168.0.102/api/useracc/cancelRideUser";
+    String url = "http://192.168.0.101:51967/api/useracc/cancelRideUser";
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,7 +94,7 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
         Client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(getActivity().getApplicationContext(), "somethng went wrong", Toast.LENGTH_LONG).show();
+//                  Toast.makeText(getActivity().getApplicationContext(), "somethng went wrong", Toast.LENGTH_LONG).show();
             }
 
             @Override

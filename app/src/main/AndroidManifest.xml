@@ -26,8 +26,7 @@
         android:label="MADAD Driver"
         android:roundIcon="@mipmap/madad_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:replace="android:label">
+        android:theme="@style/AppTheme">
         <activity android:name=".Splashscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -81,10 +80,7 @@
 
 
         <activity android:name=".feedback" />
-        <activity
-            android:name=".Accept_trip"
-            android:label="@string/title_activity_accept_trip"
-            android:theme="@style/AppTheme"></activity>
+
     </application>
 
 </manifest>

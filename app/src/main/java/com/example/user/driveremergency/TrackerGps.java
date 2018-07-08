@@ -55,7 +55,7 @@ public class TrackerGps extends Service implements LocationListener, GoogleApiCl
     private static final long MIN_DISTANCE_FOR_UPDTE = 10;
     private static final long MIN_TIME_FOR_UPDTE = 1000 * 60 * 1;
     LocationManager locationManager;
-    public String url = "http://192.168.0.102:51967/api/Driver/post";
+    public String url = "http://192.168.0.101:51967/api/Driver/post";
     Timer mTimer;
     String TAG = "LOCAION_SEND";
     SharedPreferences myPref;

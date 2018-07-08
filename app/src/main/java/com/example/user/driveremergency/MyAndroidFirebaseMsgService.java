@@ -15,6 +15,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 /**
  * Created by SHARIK on 10/25/2017.
  */
@@ -26,12 +28,16 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        String lat = remoteMessage.getNotification().getBody();
-        String mobile_no = remoteMessage.getNotification().getTitle();
-        String color = remoteMessage.getNotification().getColor();
-        String Customer_id = remoteMessage.getNotification().getSound();
-        String longi = remoteMessage.getNotification().getTag();
-        String Clickaction = remoteMessage.getNotification().getClickAction();
+
+        String parts = remoteMessage.getNotification().getBody();
+        String Parts[] = parts.split(",");
+        String lat = Parts[0];
+        String mobile_no = Parts[1];
+
+        String color = Parts[2];
+        String Customer_id = Parts[3];
+        String longi = Parts[4];
+        String Clickaction = remoteMessage.getData().get("clicker");
 
         if(myApplication.isActivityVisible()) {
             Intent intent = new Intent("myFunction");
