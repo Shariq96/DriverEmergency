@@ -96,10 +96,8 @@ public class ride_acceptance extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                bottompanel.setVisibility(View.INVISIBLE);
-                bottomsheet.setVisibility(View.VISIBLE);
-                setBottomsheet(bf);
+                Intent intent_mainActivity = new Intent();
+                setResult(RESULT_OK, intent_mainActivity);
                 finish();
             }
         });
@@ -107,8 +105,9 @@ public class ride_acceptance extends AppCompatActivity {
         ride_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelfragment.setVisibility(View.VISIBLE);
-                replaceFragment2(cf);
+
+                Intent intent_mainActivity = new Intent();
+                setResult(RESULT_CANCELED, intent_mainActivity);
                 finish();
 
 

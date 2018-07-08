@@ -2,6 +2,7 @@ package com.example.user.driveremergency;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SharedPreferences myPref;
     String aatag = "LOCAION_SEND";
     String token = FirebaseInstanceId.getInstance().getToken();
-    //   CancelationFragment cf = new CancelationFragment();
+    CancelationFragment cf = new CancelationFragment();
     String hello;
     private SwitchCompat mStatus;
     private TrackLocation Locate;
@@ -196,6 +197,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences MyPref;
     private double lat1, lng1;
     private String locObj1;
+    private FrameLayout cancelfragment;
+    private FrameLayout bottomsheet;
+    private FrameLayout bottompanel;
 
 
     private float getBearing(LatLng startPosition, LatLng endPosition) {
@@ -455,6 +459,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigattionView.setNavigationItemSelectedListener(this);
 
 
+        cancelfragment = findViewById(R.id.frame1);
+        bottomsheet = findViewById(R.id.bottom_sheet);
+        bottompanel = findViewById(R.id.bottom_panel);
+
+
         MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = MyPref.edit();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReciver,
@@ -531,7 +540,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             intent1.putExtra("cust_id", customer_id = intent.getStringExtra("customer_id"));
             intent1.putExtra("long ", longi = intent.getStringExtra("longi"));
             intent1.putExtra("click_action", click_action = intent.getStringExtra("ClickAction"));
-            startActivity(intent1);
+            startActivityForResult(intent1, 12345);
+            // startActivity(intent1);
     }
 
 
@@ -804,5 +814,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return (gDirectionUrl.toString());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode == Activity.RESULT_OK) {
+
+            bottompanel.setVisibility(GONE);
+            bottomsheet.setVisibility(View.VISIBLE);
+
+        }
+        if (resultCode == Activity.RESULT_CANCELED) {
+
+            cancelfragment.setVisibility(View.VISIBLE);
+            replaceFragment2(cf);
+            finish();
+            //Canceled logic
+        }
+    }
 }
