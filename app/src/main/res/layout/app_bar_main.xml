@@ -228,9 +228,9 @@
 
     <FrameLayout
         android:id="@+id/frame"
-        android:layout_width="272dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="560dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
         android:visibility="gone"></FrameLayout>
 
 

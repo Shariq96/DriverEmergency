@@ -37,13 +37,17 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
         String color = Parts[2];
         String Customer_id = Parts[3];
         String longi = Parts[4];
+        String destlat = Parts[5];
+        String destlong = Parts[6];
         String Clickaction = remoteMessage.getData().get("clicker");
 
         if(myApplication.isActivityVisible()) {
             Intent intent = new Intent("myFunction");
             intent.putExtra("usermobile_no", mobile_no);
             intent.putExtra("lat", lat);
+            intent.putExtra("destlat", destlat);
             intent.putExtra("longi",longi);
+            intent.putExtra("destlongi", destlong);
             intent.putExtra("token",color);
             intent.putExtra("customer_id",Customer_id);
             intent.putExtra("ClickAction",Clickaction);

@@ -27,7 +27,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
-
+import static com.example.user.driveremergency.MainActivity.userToken;
 
 /**
  * Created by User on 12/8/2017.
@@ -36,14 +36,14 @@ import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 public class search_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://724d8461.ngrok.io/api/useracc/postStartRide";
+    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search,container,false);
-        btn = (Button)view.findViewById(R.id.btn_srchptl);
+        btn = (Button) view.findViewById(R.id.btn_end);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,8 +63,10 @@ public class search_fragment extends Fragment implements FragmentChangeListner{
         urlBuilder.addQueryParameter("Trip_id",Trip_id);
         urlBuilder.addQueryParameter("Driver_id", mA.driver_Id);
         urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
-        urlBuilder.addQueryParameter("StateUpdate", "searching");
+        urlBuilder.addQueryParameter("StateUpdate", "ride Started");
         urlBuilder.addQueryParameter("Status_id","1");
+        urlBuilder.addQueryParameter("usertoken", userToken);
+
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)
@@ -111,8 +113,8 @@ public class search_fragment extends Fragment implements FragmentChangeListner{
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
-        fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+        fragmentManager.popBackStack();
     }
 }
 
