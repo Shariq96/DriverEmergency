@@ -458,6 +458,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomsheet = findViewById(R.id.bottom_acceptance);
         bottompanel = findViewById(R.id.bottom_panel);
 
+        Button cancel_ride = findViewById(R.id.cancel_ride);
+
+        cancel_ride.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CancelationFragment.class);
+                startActivity(intent);
+            }
+        });
+
 
         MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = MyPref.edit();
@@ -533,8 +543,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivityForResult(intent1, 12345);
             // startActivity(intent1);
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -771,6 +779,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
     }
+
 
     private void setDirections()
     {   Object[] dataTransfer = new Object[3];
