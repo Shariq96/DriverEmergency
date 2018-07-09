@@ -755,8 +755,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame1, fragment, fragment.toString());
-        fragmentTransaction.addToBackStack(fragment.toString());
+        fragmentTransaction.remove(fragment);
         fragmentTransaction.commit();
+        fragmentManager.popBackStack();
     }
 
     private void setDirections()

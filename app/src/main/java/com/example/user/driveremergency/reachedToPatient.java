@@ -104,7 +104,7 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         urlBuilder.addQueryParameter("Customer_id",customer_id);
         urlBuilder.addQueryParameter("StateUpdate", "Reached to Patient");
         urlBuilder.addQueryParameter("Status_id","2");
-        urlBuilder.addQueryParameter("userToken",userToken);
+        urlBuilder.addQueryParameter("usertoken", userToken);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)
@@ -151,8 +151,8 @@ public class reachedToPatient extends Fragment implements FragmentChangeListner{
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
-        fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+        fragmentManager.popBackStack();
     }
 }
 

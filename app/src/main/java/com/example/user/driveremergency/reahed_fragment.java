@@ -32,6 +32,7 @@ import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.btn1;
 import static com.example.user.driveremergency.MainActivity.fl;
+import static com.example.user.driveremergency.MainActivity.userToken;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 
@@ -73,6 +74,7 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
         urlBuilder.addQueryParameter("Customer_id",mA.customer_id);
         urlBuilder.addQueryParameter("StateUpdate", "Reached Dest and Trip Ended");
         urlBuilder.addQueryParameter("Status_id","1");
+        urlBuilder.addQueryParameter("usertoken", userToken);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)
@@ -120,8 +122,8 @@ public class reahed_fragment extends Fragment implements FragmentChangeListner{
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
-        fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+        fragmentManager.popBackStack();
     }
 }
 

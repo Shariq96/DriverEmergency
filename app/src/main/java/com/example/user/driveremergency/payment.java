@@ -29,6 +29,7 @@ import static com.example.user.driveremergency.MainActivity.destlongi;
 import static com.example.user.driveremergency.MainActivity.fl;
 import static com.example.user.driveremergency.MainActivity.longi;
 import static com.example.user.driveremergency.MainActivity.lat;
+import static com.example.user.driveremergency.MainActivity.userToken;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 public class payment extends AppCompatActivity {
@@ -101,6 +102,7 @@ public class payment extends AppCompatActivity {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         urlBuilder.addQueryParameter("trip_id", Trip_id);
         urlBuilder.addQueryParameter("payment", fare2);
+        urlBuilder.addQueryParameter("usertoken", userToken);
         String url1 = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url1)
