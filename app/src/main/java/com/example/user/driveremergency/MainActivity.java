@@ -463,8 +463,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         cancel_ride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CancelationFragment.class);
-                startActivity(intent);
+                // TODO: 7/10/2018 cancellaton wala  
+                cancelfragment.setVisibility(View.VISIBLE);
+                replaceFragment2(cf);
+                finish();
             }
         });
 
@@ -533,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
         private void displayAlert(Intent intent) {
+            // TODO: 7/10/2018 yahan se destlat aur destlng uthae hain destination address k liye 
             mobile_no = intent.getStringExtra("usermobile_no");
             lat = intent.getStringExtra("lat");
             destlat = intent.getStringExtra("destlat");
@@ -769,9 +772,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void setDirections()
-    {   Object[] dataTransfer = new Object[3];
-        String url = getDirectionUrl();
+    private void setDirections(double dest_lat, double dest_lng) {
+        double dest_latitude = dest_lat;
+        double dest_longitude = dest_lng;
+        Object[] dataTransfer = new Object[3];
+        String url = getDirectionUrl(dest_latitude, dest_longitude);
         GetDirectionData gdd = new GetDirectionData();
         dataTransfer[0] =mMap;
         dataTransfer[1]= url;
@@ -781,7 +786,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         gdd.execute(dataTransfer);
 
     }
-    private String getDirectionUrl() {
+
+    private String getDirectionUrl(double lat, double lng) {
         StringBuilder gDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -794,9 +800,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // for ActivityCompat#requestPermissions for more details.
             return null;
         }
+        // TODO: 7/10/2018 dekh yahan hum destination mein hard coded de rahy thy mein ne setdirection k method mein dest lat lng pass kara dia  
+        
         Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
         gDirectionUrl.append("origin="+currentLocation.getLatitude()+","+currentLocation.getLongitude());
-        gDirectionUrl.append("&destination="+24.879239+","+67.018527);
+        gDirectionUrl.append("&destination=" + lat + "," + lng);
         gDirectionUrl.append("&key="+"AIzaSyA4ja7O-DvuqA6ivaurF3_FJUuXneVh63s");
         return (gDirectionUrl.toString());
     }
@@ -811,6 +819,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             fl.setVisibility(View.VISIBLE);
             bottompanel.setVisibility(View.GONE);
             replaceFragment(startRide);
+            // TODO: 7/10/2018 aur yahan call karwa dia hai 
+            setDirections(Double.valueOf(destlat), Double.valueOf(destlongi));
 
         }
         if (resultCode == Activity.RESULT_CANCELED) {

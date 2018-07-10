@@ -89,6 +89,7 @@
 
                 <Button
                     android:id="@+id/cancel_ride"
+                    style="@android:style/Widget.Material.Button.Inset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -128,7 +129,7 @@
                     android:background="@color/colorPrimary"
                     android:text="End               Trip"
                     android:textColor="@color/white"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:visibility="gone" />
 
 
