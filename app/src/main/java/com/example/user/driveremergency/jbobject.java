@@ -39,7 +39,8 @@ public class jbobject
         }
         return  obj;
     }
-    public  JSONObject resptoreq(String mobile_no,String lat,String longi,String token,String myToken,String usermobile){
+
+    public JSONObject resptoreq(String mobile_no, String lat, String longi, String token, String myToken, String usermobile, String destlat, String destlong) {
         JSONObject obj = new JSONObject();
         try {
             obj.put("mobile_no", mobile_no);
@@ -48,6 +49,8 @@ public class jbobject
             obj.put("token", token);
             obj.put("token_no", myToken);
             obj.put("usermobile", usermobile);
+            obj.put("destlat", destlat);
+            obj.put("destlong", destlong);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

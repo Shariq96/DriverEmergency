@@ -23,9 +23,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.btn1;
+import static com.example.user.driveremergency.MainActivity.cancelfragment;
 import static com.example.user.driveremergency.MainActivity.f2;
 import static com.example.user.driveremergency.MainActivity.fl;
 import static com.example.user.driveremergency.MainActivity.userToken;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 /**
@@ -39,7 +41,7 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
     RadioGroup radioReasongGrp;
     int selectedId;
     String val;
-    String url = "http://192.168.0.101:51967/api/useracc/cancelRideUser";
+    String url = wholeurl + "/useracc/cancelRideUser";
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,9 +57,9 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
                     radioReasonBtn = (RadioButton) getView().findViewById(selected_Id);
                     Toast.makeText(getActivity().getApplicationContext(), radioReasonBtn.getText().toString(), Toast.LENGTH_SHORT).show();
                     fl.setVisibility(View.GONE);
-                     btn1.setVisibility(View.GONE);
+                // btn1.setVisibility(View.GONE);
                     Toast.makeText(getActivity().getApplicationContext(), "YOUR RIDE IS CANCELED", Toast.LENGTH_LONG).show();
-                    f2.setVisibility(View.GONE);
+                cancelfragment.setVisibility(View.GONE);
                    try {
                         post(url, radioReasonBtn.getText().toString());
                     } catch (IOException e) {
@@ -125,8 +127,8 @@ public class CancelationFragment extends Fragment implements FragmentChangeListn
         CancelationFragment cf = new CancelationFragment();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.remove(cf);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+        fragmentTransaction.replace(R.id.frame, fragment, fragment.toString());
+        fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
     }
 }

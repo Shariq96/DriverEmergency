@@ -23,10 +23,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.user.driveremergency.MainActivity.wholeurl;
+
 public class HistoryActivity extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-    public String url = "http://192.168.0.102:51967//api/driver/getHistory";
+    public String url = wholeurl + "/driver/getHistory";
     SharedPreferences myPref;
     JSONArray array = null;
     JSONObject jsonObj = null;

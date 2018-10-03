@@ -33,6 +33,7 @@ import okhttp3.Response;
 import static com.example.user.driveremergency.MainActivity.btn1;
 import static com.example.user.driveremergency.MainActivity.fl;
 import static com.example.user.driveremergency.MainActivity.userToken;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 
@@ -43,7 +44,7 @@ import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 public class reahed_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view, view1;
-    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
+    String url = wholeurl + "/useracc/postStartRide";
 
     MainActivity mA = new MainActivity();
     @Nullable

@@ -31,6 +31,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -127,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static String mobile_no, lat, longi, userToken, customer_id, click_action, destlat, destlongi;
     public static LatLng currentLocationlatlang;
    public static  Button btn1;
-    public String url1 = "http://192.168.0.101:51967/api/driver/post";
+    public static String wholeurl = "http://192.168.8.102:51967/api";
+    public static FrameLayout cancelfragment;
     private List<LatLng> polyLineList;
     private Marker pickupLocationMarker;
     private float v;
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences MyPref;
     private double lat1, lng1;
     private String locObj1;
-    private FrameLayout cancelfragment;
+    public String url1 = wholeurl + "/driver/post";
     private FrameLayout bottomsheet;
     private FrameLayout bottompanel;
 
@@ -420,6 +422,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+        startService(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Intent intent = new Intent(MainActivity.this, TrackerGps.class);
+        getApplicationContext().stopService(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -455,20 +470,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         cancelfragment = findViewById(R.id.frame1);
-        bottomsheet = findViewById(R.id.bottom_acceptance);
+        // bottomsheet = findViewById(R.id.bottom_acceptance);
         bottompanel = findViewById(R.id.bottom_panel);
 
-        Button cancel_ride = findViewById(R.id.cancel_ride);
-
-        cancel_ride.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 7/10/2018 cancellaton wala  
-                cancelfragment.setVisibility(View.VISIBLE);
-                replaceFragment2(cf);
-                finish();
-            }
-        });
 
 
         MyPref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -478,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mStatusText = findViewById(R.id.mStatusText);
         mStatus = findViewById(R.id.status_switch);
+
         //      f2 = (FrameLayout)findViewById(R.id.frame1);
         fl = (FrameLayout) findViewById(R.id.frame);
         //     btn1 = (Button) findViewById(R.id._SearchDirections);
@@ -497,11 +502,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent intent = new Intent(MainActivity.this, TrackerGps.class);
                     startService(intent);
                     mStatusText.setText("Online");
+                    mStatusText.setBackgroundColor(Color.GREEN);
                 } else {
                     Intent intent = new Intent(MainActivity.this, TrackerGps.class);
                     getApplicationContext().stopService(intent);
                     run();
                     mStatusText.setText("Offline");
+                    mStatusText.setBackgroundColor(Color.RED);
                 }
             }
         });
@@ -558,29 +565,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             super.onBackPressed();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
 
@@ -766,13 +750,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame1, fragment, fragment.toString());
-        fragmentTransaction.remove(fragment);
         fragmentTransaction.commit();
-        fragmentManager.popBackStack();
     }
 
 
-    private void setDirections(double dest_lat, double dest_lng) {
+    public void setDirections(double dest_lat, double dest_lng) {
         double dest_latitude = dest_lat;
         double dest_longitude = dest_lng;
         Object[] dataTransfer = new Object[3];
@@ -803,12 +785,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // TODO: 7/10/2018 dekh yahan hum destination mein hard coded de rahy thy mein ne setdirection k method mein dest lat lng pass kara dia  
         
         Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        gDirectionUrl.append("origin="+currentLocation.getLatitude()+","+currentLocation.getLongitude());
+        gDirectionUrl.append("origin=" + currentLocationlatlang.latitude + "," + currentLocationlatlang.longitude);
         gDirectionUrl.append("&destination=" + lat + "," + lng);
-        gDirectionUrl.append("&key="+"AIzaSyA4ja7O-DvuqA6ivaurF3_FJUuXneVh63s");
+        gDirectionUrl.append("&key=" + "AIzaSyCdJv1f-jv5yU2orVs6TBlFBDZ8kwJJPBI");
         return (gDirectionUrl.toString());
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+            Toast.makeText(getApplicationContext(), "Can't Go Back",
+                    Toast.LENGTH_LONG).show();
+
+        return false;
+        // Disable back button.............
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -820,14 +811,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             bottompanel.setVisibility(View.GONE);
             replaceFragment(startRide);
             // TODO: 7/10/2018 aur yahan call karwa dia hai 
-            setDirections(Double.valueOf(destlat), Double.valueOf(destlongi));
+            setDirections(Double.valueOf(lat), Double.valueOf(longi));
 
         }
         if (resultCode == Activity.RESULT_CANCELED) {
 
             cancelfragment.setVisibility(View.VISIBLE);
             replaceFragment2(cf);
-            finish();
+
             //Canceled logic
         }
     }

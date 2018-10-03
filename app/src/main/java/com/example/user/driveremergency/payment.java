@@ -30,18 +30,19 @@ import static com.example.user.driveremergency.MainActivity.fl;
 import static com.example.user.driveremergency.MainActivity.longi;
 import static com.example.user.driveremergency.MainActivity.lat;
 import static com.example.user.driveremergency.MainActivity.userToken;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 
 public class payment extends AppCompatActivity {
 
     Geocoder geocoder;
     Geocoder geocoder1;
-    String url = "http://192.168.0.101:51967/api/driver/payment";
+    String url = wholeurl + "/driver/payment";
     List<Address> addresses;
     List<Address> desti;
     String fare2;
     OkHttpClient Client = new OkHttpClient();
-    private TextView source, dest, fare, distance;
+    private TextView source, dest, fare, finalfare;
     private int baseFee = 300;
     private int costPerKM = 10;
     private Button btn;
@@ -55,16 +56,16 @@ public class payment extends AppCompatActivity {
         source = (TextView) findViewById(R.id.textView4);
         dest = (TextView) findViewById(R.id.textView);
         fare = (TextView) findViewById(R.id.textView5);
-        distance = (TextView) findViewById(R.id.textfare);
+        finalfare = (TextView) findViewById(R.id.textfare);
         btn = (Button) findViewById(R.id.btncash);
         float result[] = new float[10];
 
         Location.distanceBetween(Double.parseDouble(lat), Double.parseDouble(longi), Double.parseDouble(destlat), Double.parseDouble(destlongi), result);
         int distance = (int) result[0] / 1000;
-        dest.setText("Distance: " + distance + "km");
+        dest.setText(fare2);
         fare2 = String.valueOf((distance * costPerKM) + baseFee);
-        fare.setText(fare2);
-
+        fare.setText(distance + "km");
+        finalfare.setText((fare2));
         geocoder = new Geocoder(this, Locale.getDefault());
         geocoder1 = new Geocoder(this, Locale.getDefault());
         try {

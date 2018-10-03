@@ -37,6 +37,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.currentLocationlatlang;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
 
 /**
  * Created by User on 2/16/2018.
@@ -55,7 +56,7 @@ public class TrackerGps extends Service implements LocationListener, GoogleApiCl
     private static final long MIN_DISTANCE_FOR_UPDTE = 10;
     private static final long MIN_TIME_FOR_UPDTE = 1000 * 60 * 1;
     LocationManager locationManager;
-    public String url = "http://192.168.0.101:51967/api/Driver/post";
+    public String url = wholeurl + "/Driver/post";
     Timer mTimer;
     String TAG = "LOCAION_SEND";
     SharedPreferences myPref;

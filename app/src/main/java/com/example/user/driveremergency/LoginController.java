@@ -31,11 +31,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.example.user.driveremergency.MainActivity.driver_Id;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
+
 public class LoginController extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     public static boolean LogedIn = false;
-    public String url = "http://192.168.0.101:51967//api/driver/Login";
+    public String url = wholeurl + "/driver/Login";
     EditText mobile_no;
     EditText pass;
     CheckBox sv_pass;
@@ -109,20 +111,7 @@ public class LoginController extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                CountDownTimer countDownTimer = new CountDownTimer(3000, 1000) {
 
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        Toasty.info(getApplicationContext(), "Login Sucessful", Toast.LENGTH_LONG, true).show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        Toasty.success(getApplicationContext(), "Welcome!", Toast.LENGTH_LONG, true).show();
-                    }
-                };
-
-                countDownTimer.start();
 
 
             }

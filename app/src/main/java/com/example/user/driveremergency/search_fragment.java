@@ -1,7 +1,12 @@
 package com.example.user.driveremergency;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +22,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,6 +32,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.user.driveremergency.MainActivity.destlat;
+import static com.example.user.driveremergency.MainActivity.destlongi;
+import static com.example.user.driveremergency.MainActivity.lat;
+import static com.example.user.driveremergency.MainActivity.longi;
+import static com.example.user.driveremergency.MainActivity.mobile_no;
+import static com.example.user.driveremergency.MainActivity.myloc;
+import static com.example.user.driveremergency.MainActivity.wholeurl;
 import static com.example.user.driveremergency.ride_acceptance.Trip_id;
 import static com.example.user.driveremergency.MainActivity.userToken;
 
@@ -36,21 +49,53 @@ import static com.example.user.driveremergency.MainActivity.userToken;
 public class search_fragment extends Fragment implements FragmentChangeListner{
     Button btn;
     View view;
-    String url = "http://192.168.0.101:51967/api/useracc/postStartRide";
+    String url = wholeurl + "/useracc/postStartRide";
+
 
     MainActivity mA = new MainActivity();
+    private Button btncall;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search,container,false);
         btn = (Button) view.findViewById(R.id.btn_end);
+        btncall = (Button) view.findViewById(R.id.contact_user);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     post(url);
+                    ((MainActivity) getActivity()).setDirections(Double.valueOf(destlat), Double.valueOf(destlongi));
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + myloc.getLatitude() + "," + myloc.getLongitude() + "&daddr=" + destlat + "," + destlongi));
+                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    startActivity(intent);
+
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        });
+        btncall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL); //use ACTION_CALL class
+                callIntent.setData(Uri.parse("tel:" + mobile_no));    //this is the phone number calling
+                //check permission
+                //If the device is running Android 6.0 (API level 23) and the app's targetSdkVersion is 23 or higher,
+                //the system asks the user to grant approval.
+                if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    //request permission from user if the app hasn't got the required permission
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.CALL_PHONE},   //request specific permission from user
+                            10);
+                    return;
+                } else {     //have got permission
+                    try {
+                        startActivity(callIntent);  //call activity and make phone call
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(getActivity().getApplicationContext(), "yourActivity is not founded", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
